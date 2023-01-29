@@ -29,7 +29,7 @@ SECRET_KEY = don_settings.SECRET_KEY
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ '*' ]
 
 
 # Application definition
@@ -41,13 +41,41 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
+    'rest_framework',
     'don_home',
-    'debug_toolbar'
+    'debug_toolbar',
+    'six'
 ]
 
 INTERNAL_IPS = [
     '127.0.0.1'
 ]
+
+# CORS
+CORS_ORIGIN_ALLOW_ALL=True
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -58,6 +86,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'cp2_don.urls'
@@ -92,7 +121,7 @@ EMAIL_PORT          = don_settings.EMAIL['EMAIL_PORT']
 EMAIL_HOST          = don_settings.EMAIL['EMAIL_HOST']
 EMAIL_HOST_USER     = don_settings.EMAIL['EMAIL_HOST_USER']
 EMAIL_HOST_PASSWORD = don_settings.EMAIL['EMAIL_HOST_PASSWORD']
-SERVER_EMAIL        = don_settings.EMAIL['SERVER_EMAIL']
+DEFAULT_FROM_EMAIL = don_settings.EMAIL['DEFAULT_FROM_EMAIL']
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -136,3 +165,6 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

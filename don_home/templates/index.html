@@ -1,12 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Hello World!</h1>
-</body>
-</html>
+
+{% block contents %}
+<div class="row mt-5">
+    <div class="col-12 text-center">
+        <h1>홈페이지</h1>
+    </div>
+</div>
+{{ user }}
+{% if user.is_authenticated %}
+<p><a href="{% url 'logout' %}">로그아웃</a></p>
+{% else %}
+<button class="btn btn-primary btn-block" onclick="location.href='/login/'">로그인</button>
+<button class="btn btn-primary btn-block" onclick="location.href='/signup/'">회원가입</button>
+{% endif %}
+
+{% endblock %}
