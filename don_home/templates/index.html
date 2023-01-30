@@ -8,8 +8,10 @@
 {{ user }}
 <!-- 사용자가 로그인 이후 보여지는 페이지 -->
 {% if user.is_authenticated %}
-<p><a href="{% url 'ably' %}">에이블리로 가기</a></p>
-<p><a href="{% url 'logout' %}">로그아웃</a></p>
+<p><a href="{% url 'app:ably' %}">에이블리</a></p>
+<p><a href="{% url 'app:cafe24' %}">카페24</a></p>
+<!-- <button class="btn btn-primary btn-block" onclick="location.href='/user/ably'">에이블리</button> -->
+<button class="btn btn-primary btn-block" onclick="location.href='/logout/'">로그아웃</button>
 <!-- 로그인 하기 전에 보여지는 페이지 -->
 {% else %}
 <button class="btn btn-primary btn-block" onclick="location.href='/login/'">로그인</button>

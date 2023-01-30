@@ -16,7 +16,8 @@ from django.core.mail import send_mail
 from django.utils.encoding import force_bytes, force_text
 from .tokens import account_activation_token
 
-from don_home.apis.cafe24 import Test
+from don_home.models import Ably_token, Cafe24
+from don_home.apis.ably import AblyDataInfo
 
 
 # Create your views here.
@@ -61,8 +62,6 @@ def signup(request):
 def login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
-        # email = request.POST['email']
-        # password = request.POST['password']
         msg = '아이디 또는 패스워드가 일치하지 않습니다.'
         if form.is_valid():
             username = form.cleaned_data.get('username')
@@ -71,7 +70,7 @@ def login(request):
             if user is not None:
                 msg = '로그인 성공'
                 auth.login(request, user)
-                return redirect('index')
+                return redirect('app:index')
         return render(request, "register/login.html", {"form": form, "msg" : msg})
     else:
         form = AuthenticationForm()
@@ -79,7 +78,7 @@ def login(request):
 
 def logout(request):
     auth.logout(request)
-    return redirect('index')
+    return redirect('app:index')
 
 
 def activate(request, uid64, token):
@@ -92,7 +91,7 @@ def activate(request, uid64, token):
         user.is_active = True
         user.save()
         auth.login(request, user)
-        return redirect('index')
+        return redirect('app:index')
     else:
         return render(request, 'index.hmlt', {'error' : '계정 활성화 오류'})
 
@@ -109,13 +108,34 @@ def checkeusername(request):
     return JsonResponse(result)
 
 # ABLY
-# @login_required
-# def ably(request):
-#     if request.method == 'POST':
-#         ably_user = Ablytoken(
-#             ably_id=request.POST['ablyid'], 
-#             ably_pw=request.POST['ablypw'])
-#         ably_user.save()
-#         return render(request, 'ably/ably_home.html')
-#     else:
-#         return render(request, 'ably/ably_home.html')
+def ably(request):
+    if request.method == 'POST':
+        ably_user = Ably_token(
+            ably_id=request.POST['ablyid'], 
+            ably_pw=request.POST['ablypw'],
+            user_id = request.user.id)
+        ably_user.save()
+        return render(request, 'user/ably.html')
+    else:
+        return render(request, 'user/ably.html')
+
+def ably_crawling(request):
+    AblyDataInfo()
+
+# CAFE24
+def cafe24(request):
+    if request.method == 'POST':
+        cafe24_user = Cafe24(
+            cafe24_id = request.POST['cafe24id'],
+            cafe24_pw = request.POST['cafe24pw'],
+            cafe24_clientid = request.POST['cafe24_clientid'],
+            cafe24_client_secret = request.POST['cafe24_client_secret'],
+            cafe24_mallid = request.POST['cafe24_mallid'],
+            cafe24_encode_csrf_token = request.POST['cafe24_encode_csrf_token'],
+            cafe24_redirect_uri = request.POST['cafe24_redirect_uri'],
+            user_id = request.user.id)
+        cafe24_user.save()
+        return render(request, 'user/cafe24.html')
+    else:
+        return render(request, 'user/cafe24.html')
+

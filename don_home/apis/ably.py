@@ -1,0 +1,128 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+import time
+import pyperclip
+from selenium.webdriver.common.keys import Keys
+import pandas as pd
+
+def AblyDataInfo(ably_id, ably_pw):
+    # Options Setting
+    options = webdriver.ChromeOptions()
+    options.add_argument('--no-sandbox')
+    options.add_argument('no-sandox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--start-maximized')
+    options.add_argument('incognito')
+    options.add_argument('--headless')
+    # Header Setting
+    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36")
+
+    browser = webdriver.Chrome("./chromedriver.exe" ,options=options)
+
+    browser.get("https://my.a-bly.com/sales/order")
+
+    def finds(css_selector):
+        return browser.find_elements(By.CSS_SELECTOR, css_selector)
+
+    def find(css_selector):
+        return browser.find_element(By.CSS_SELECTOR, css_selector)
+
+    def finds_xpath(xpath):
+        return browser.find_elements(By.XPATH, xpath)
+
+    def find_xpath(xpath):
+        return browser.find_element(By.XPATH, xpath)
+
+
+    input_id = find_xpath ('//*[@id="app"]/div[2]/form/div[3]/div/div/input')
+    input_pw = find_xpath ('//*[@id="app"]/div[2]/form/div[4]/div/div/input')
+
+    time.sleep(2)
+
+    pyperclip.copy(ably_id) # Copy - Control + c
+    input_id.send_keys(Keys.CONTROL, "v") # Paste - Control + v
+
+    pyperclip.copy(ably_pw) # Copy - Control + c
+    input_pw.send_keys(Keys.CONTROL, "v") # Paste - Control + v
+    input_pw.send_keys("\n") # Enter
+
+    time.sleep(2.5)
+
+    total_date = find_xpath('//*[@id="app"]/div[2]/div[3]/section/div/div[1]/form/div[1]/div/div')
+    total_date.click()
+
+    time.sleep(0.5)
+
+    last_year = find_xpath('/html/body/div[3]/div[1]/div[1]/button[3]')
+    last_year.click()
+
+    time.sleep(0.5)
+
+    search_btn = find_xpath('//*[@id="app"]/div[2]/div[3]/section/div/div[1]/form/div[3]/div/button')
+    search_btn.click()
+
+    browser.implicitly_wait(10)
+
+    count_sort = find_xpath('//*[@id="app"]/div[2]/div[3]/section/div/div[4]/div/div/span[2]/div/div/input')
+    count_sort.click()
+
+    sort_100 = find_xpath('/html/body/div[4]/div[1]/div[1]/ul/li[4]')
+    sort_100.click()
+
+    browser.implicitly_wait(10)
+
+    right_btn = find_xpath('//*[@id="app"]/div[2]/div[3]/section/div/div[4]/div/div/button[2]')
+
+    time.sleep(3)
+
+    li_number = find_xpath('//*/div[2]/div[3]/section/div/div[4]/div/div/ul').text
+    int(li_number[-1])
+
+    if int(li_number[-1]) > 1:
+        df = pd.read_html(browser.page_source)[1]
+        for i in range(int(li_number[-1])):
+            right_btn.click()
+            df2 = pd.read_html(browser.page_source)[1]
+            
+            df = pd.concat([df, df2])
+            time.sleep(3)
+    else:
+        df = pd.read_html(browser.page_source)[1]
+
+    products_btn = find_xpath('//*[@id="app"]/div[2]/div[2]/div[1]/div/ul/div[3]/li/div/div')
+    products_btn.click()
+
+    pro_list = find_xpath('//*[@id="app"]/div[2]/div[2]/div[1]/div/ul/div[3]/li/ul/a[1]')
+    pro_list.click()
+
+    time.sleep(1.5)
+
+    count_sort = find_xpath('//*[@id="app"]/div[2]/div[3]/section/div/div[4]/div/div/span[2]/div/div[1]/input')
+    count_sort.click()
+
+    time.sleep(0.5)
+
+    sort_100 = find_xpath('/html/body/div[3]/div[1]/div[1]/ul/li[4]')
+    sort_100.click()
+
+    li_number = find_xpath('//*/div[2]/div[3]/section/div/div[4]/div/div/ul').text
+
+    right_btn = find_xpath('//*[@id="app"]/div[2]/div[3]/section/div/div[4]/div/div/button[2]')
+
+    if int(li_number[-1]) > 1:
+        df_pro = pd.read_html(browser.page_source)[1]
+        for i in range(int(li_number[-1])):
+            right_btn.click()
+            df_pro2 = pd.read_html(browser.page_source)[1]
+            
+            df_pro = pd.concat([df_pro, df_pro2])
+            time.sleep(3)
+    else:
+        df_pro = pd.read_html(browser.page_source)[1]
+
+    df.drop_duplicates(inplace=True)
+    df.columns = ['paymentDate', 'productOrderNumber', 'orderNumber', 'productName', 'options', 'total', 'orderName', 'phoneNumber', 'orderStatus']    
+
+    df_pro.drop_duplicates(inplace=True)
+    df_pro = df_pro.drop(columns=[0, 2, 3, 4, 12], axis=1)
+    df_pro.columns = ['productNumber', 'productName', 'price', 'discountPeriod', 'discountPrice', 'registrationDate', 'statusDisplay', 'stock', 'totalReview', 'parcel', 'returnShippingCost', 'extraShippingCost']
