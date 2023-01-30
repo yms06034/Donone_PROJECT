@@ -7,5 +7,6 @@ urlpatterns = [
     path('login/', views.login, name="login"),
     path('logout/', views.logout, name="logout"),
     path('activate/<str:uid64>/<str:token>/', views.activate, name="activate"),
-    path('api/checkeusername', views.checkeusername, name="checkeusername")
+    path('api/checkeusername', views.checkeusername, name="checkeusername"),
+    # path('ably/' , views.ably, name='ably')
 ]

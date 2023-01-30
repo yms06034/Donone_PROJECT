@@ -4,6 +4,7 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, PasswordChangeForm
+from django.contrib.auth.decorators import login_required
 
 from rest_framework.parsers import JSONParser
 
@@ -14,6 +15,8 @@ from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.utils.encoding import force_bytes, force_text
 from .tokens import account_activation_token
+
+from don_home.apis.cafe24 import Test
 
 
 # Create your views here.
@@ -104,3 +107,15 @@ def checkeusername(request):
         'data' : "not exist" if user is None else "exist"
     }
     return JsonResponse(result)
+
+# ABLY
+# @login_required
+# def ably(request):
+#     if request.method == 'POST':
+#         ably_user = Ablytoken(
+#             ably_id=request.POST['ablyid'], 
+#             ably_pw=request.POST['ablypw'])
+#         ably_user.save()
+#         return render(request, 'ably/ably_home.html')
+#     else:
+#         return render(request, 'ably/ably_home.html')
