@@ -16,8 +16,11 @@ from django.core.mail import send_mail
 from django.utils.encoding import force_bytes, force_text
 from .tokens import account_activation_token
 
-from don_home.models import Ably_token, Cafe24
+from don_home.models import Ably_token, Cafe24, AblyProductInfo, AblySalesInfo
+from don_home.serializers import AblySerializer, Cafe24Serializer
 from don_home.apis.ably import AblyDataInfo
+from don_home.apis.cafe24 import call_total_api
+
 
 
 # Create your views here.
@@ -29,6 +32,7 @@ def index(request):
         log = '로그인이 필요합니다.'
     return render(request, 'index.html', {'login' : log})
 
+@csrf_exempt
 def signup(request):
     if request.method == 'POST':
         if request.POST['password1'] == request.POST['password2']:
@@ -59,6 +63,7 @@ def signup(request):
 
     return render(request, 'register/signup.html')
 
+@csrf_exempt
 def login(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, request.POST)
@@ -108,6 +113,7 @@ def checkeusername(request):
     return JsonResponse(result)
 
 # ABLY
+@login_required
 def ably(request):
     if request.method == 'POST':
         ably_user = Ably_token(
@@ -115,14 +121,69 @@ def ably(request):
             ably_pw=request.POST['ablypw'],
             user_id = request.user.id)
         ably_user.save()
-        return render(request, 'user/ably.html')
+        return render(request, 'user/ably_success.html')
     else:
         return render(request, 'user/ably.html')
 
-def ably_crawling(request):
-    AblyDataInfo()
+@login_required
+def usertoken(request):
+    if request.method == 'GET':
+        data = Ably_token.objects.select_related('user').filter(user_id=request.user.id)
+        return render(request, 'user/token_info.html', {'data_list' : data}) 
+    elif request.method == 'POST':
+        data2 = Ably_token.objects.select_related('user').filter(user_id=request.user.id).values('ably_id', 'ably_pw')
+        ably_id = data2[0]['ably_id']
+        ably_pw = data2[0]['ably_pw']
+        df, df_pro = AblyDataInfo(ably_id, ably_pw)
+        for i in range(len(df['paymentDate'])):
+            ably_sales = AblySalesInfo (
+                paymentDate = df['paymentDate'][i],
+                productOrderNumber = df['productOrderNumber'][i],
+                orderNumber = df['orderNumber'][i],
+                productName = df['productName'][i],
+                options = df['options'][i],
+                total = df['total'][i],
+                orderName = df['orderName'][i],
+                phoneNumber = df['phoneNumber'][i],
+                orderStatus = df['orderStatus'][i],
+                user_id = request.user.id)
+            ably_sales.save()
+        for a in range(len(df_pro['productName'])):
+            ably_product = AblyProductInfo (
+                productNumber = df_pro['productNumber'][a],
+                productName = df_pro['productName'][a],
+                price = df_pro['price'][a],
+                discountPeriod = df_pro['discountPeriod'][a],
+                discountPrice = df_pro['discountPrice'][a],
+                registrationDate = df_pro['registrationDate'][a],
+                statusDisplay = df_pro['statusDisplay'][a],
+                stock = df_pro['stock'][a],
+                totalReview = df_pro['totalReview'][a],
+                parcel = df_pro['parcel'][a],
+                returnShippingCost = df_pro['returnShippingCost'][a],
+                extraShippingCost = df_pro['extraShippingCost'][a],
+                user_id = request.user.id)
+            ably_product.save()
+        # data3 = Cafe24.objects.select_related('user').filter(user_id=request.user.id).values()
+        # admin_id = data3[0]['cafe24_id']
+        # admin_pw = data3[0]['cafe24_pw']
+        # client_id = data3[0]['cafe24_clientid']
+        # client_secret = data3[0]['cafe24_client_secret']
+        # mall_id = data3[0]['cafe24_mallid']
+        # encode_csrf_token = data3[0]['cafe24_encode_csrf_token']
+        # redirect_uri = data3[0]['cafe24_redirect_uri']
+        # total_api = call_total_api(admin_id, admin_pw, client_id, client_secret, mall_id, encode_csrf_token, redirect_uri)
+        # categories = total_api['categories']
+        # products = total_api['products']
+        # orders = total_api['orders']
+        # coupons = total_api['coupons']
+        return render(request, 'user/token_info.html', {'df' : df, 
+                                                        'df_pro' : df_pro,})
+    return render(request, 'user/token_info.html')
+
 
 # CAFE24
+@login_required
 def cafe24(request):
     if request.method == 'POST':
         cafe24_user = Cafe24(
@@ -133,6 +194,7 @@ def cafe24(request):
             cafe24_mallid = request.POST['cafe24_mallid'],
             cafe24_encode_csrf_token = request.POST['cafe24_encode_csrf_token'],
             cafe24_redirect_uri = request.POST['cafe24_redirect_uri'],
+            service_key = request.POST['cafe24_service_key'],
             user_id = request.user.id)
         cafe24_user.save()
         return render(request, 'user/cafe24.html')

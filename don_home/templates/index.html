@@ -10,6 +10,7 @@
 {% if user.is_authenticated %}
 <p><a href="{% url 'app:ably' %}">에이블리</a></p>
 <p><a href="{% url 'app:cafe24' %}">카페24</a></p>
+<p><a href="{% url 'app:usertoken' %}">입력 정보 보러가기</a></p>
 <!-- <button class="btn btn-primary btn-block" onclick="location.href='/user/ably'">에이블리</button> -->
 <button class="btn btn-primary btn-block" onclick="location.href='/logout/'">로그아웃</button>
 <!-- 로그인 하기 전에 보여지는 페이지 -->

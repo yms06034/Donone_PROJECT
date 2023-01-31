@@ -1,0 +1,14 @@
+{% for data in data_list %}
+{{ data.ably_id }}
+{{ data.ably_pw }}
+{% endfor %}
+<form method="POST">
+    {% csrf_token %}
+    <button class="btn btn-primary btn-block" name="ablycrawling">데이터 가져오기</button>
+</form>
+<p>{{df}}</p>
+<p>{{df_pro}}</p>
+<p>{{cate}}</p>
+<p>{{products}}</p>
+<p>{{orders}}</p>
+<p>{{coupons}}</p>

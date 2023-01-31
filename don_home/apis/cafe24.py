@@ -8,20 +8,8 @@ import time
 import pyperclip
 from datetime import datetime, timedelta
 
-admin_id = ""
-admin_pw = ""
-
-client_id = ""
-client_secret = ""
-service_key = ""
-
-mall_id = ""
-encode_csrf_token = "" # 임의로 정하기
-redirect_uri = ""
-
-
 # 통합 API 추출
-def call_total_api():
+def call_total_api(admin_id, admin_pw, client_id, client_secret, mall_id, encode_csrf_token, redirect_uri):
     # code 가져오기
     def get_cafe24_code(scope):
         # code를 가져와야하는 URL
