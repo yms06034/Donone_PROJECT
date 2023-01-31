@@ -1,31 +1,31 @@
 <form method="POST" action="{% url 'app:cafe24'%}">
     {% csrf_token %}
     <label for="cafe24id">cafe24_id</label>
-    <input id="cafe24id" name="cafe24id" type="text">
+    <input required id="cafe24id" name="cafe24id" type="text">
     <br>
     <br>
     <label for="cafe24pw">cafe24_pw</label>
-    <input id="cafe24pw" name="cafe24pw" type="text">
+    <input required id="cafe24pw" name="cafe24pw" type="text">
     <br>
     <br>
     <label for="cafe24_clientid">cafe24_clientid</label>
-    <input id="cafe24_clientid" name="cafe24_clientid" type="text">
+    <input required id="cafe24_clientid" name="cafe24_clientid" type="text">
     <br>
     <br>
     <label for="cafe24_client_secret">cafe24_client_secret</label>
-    <input id="cafe24_client_secret" name="cafe24_client_secret" type="text">
+    <input required id="cafe24_client_secret" name="cafe24_client_secret" type="text">
     <br>
     <br>
     <label for="cafe24_mallid">cafe24_mallid</label>
-    <input id="cafe24_mallid" name="cafe24_mallid" type="text">
+    <input required id="cafe24_mallid" name="cafe24_mallid" type="text">
     <br>
     <br>
     <label for="cafe24_encode_csrf_token">cafe24_encode_csrf_token</label>
-    <input id="cafe24_encode_csrf_token" name="cafe24_encode_csrf_token" type="text">
+    <input required id="cafe24_encode_csrf_token" name="cafe24_encode_csrf_token" type="text">
     <br>
     <br>
     <label for="cafe24_redirect_uri">cafe24_redirect_uri</label>
-    <input id="cafe24_redirect_uri" name="cafe24_redirect_uri" type="text">
+    <input required id="cafe24_redirect_uri" name="cafe24_redirect_uri" type="text">
     <p>
         <input type="submit" id="ably-submit" value="확인">
     </p>

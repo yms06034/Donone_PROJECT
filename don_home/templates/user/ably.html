@@ -1,18 +1,20 @@
-<form method="POST" action="{% url 'app:ably'%}">
-{% if ably_token.is_authenticated %}
-    <p>{{ ably_token.ably_id }}</p>
+{% if ably_list %}
+    {% for ably in ably_list %}
+    <p>{{ ably.ably_id }}</p>
+    {% endfor %}
     <button>데이터 가져오기</button>
 {% else %}
+<form method="POST" action="{% url 'app:ably'%}">
     {% csrf_token %}
     <label for="ablyid">에이블리 아이디</label>
-    <input id="ablyid" name="ablyid" type="text">
+    <input required id="ablyid" name="ablyid" type="text">
     <br>
     <br>
     <label for="ablypw">에이블리 비밀번호</label>
-    <input id="ablypw" name="ablypw" type="text">
+    <input required id="ablypw" name="ablypw" type="text">
     <p>
         <input type="submit" id="ably-submit" value="확인">
     </p>
     <button>데이터 가져오기</button>
-{% endif %}
 </form>
+{% endif %}

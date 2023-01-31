@@ -1,9 +1,21 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 import time
 import pyperclip
-from selenium.webdriver.common.keys import Keys
 import pandas as pd
+import pymysql
+from sqlalchemy import create_engine
+
+from cp2_don.don_settings import MYSQL_CONN
+# MySQL Connector using pymysql
+# pymysql.install_as_MySQLdb()
+
+# import MySQLdb
+
+# engine = create_engine(MYSQL_CONN)
+# conn = engine.connect()
+
 
 def AblyDataInfo(ably_id, ably_pw):
     # Options Setting
@@ -13,11 +25,11 @@ def AblyDataInfo(ably_id, ably_pw):
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--start-maximized')
     options.add_argument('incognito')
-    options.add_argument('--headless')
+    # options.add_argument('--headless')
     # Header Setting
     options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36")
 
-    browser = webdriver.Chrome("./chromedriver.exe" ,options=options)
+    browser = webdriver.Chrome("chromedriver.exe" ,options=options)
 
     browser.get("https://my.a-bly.com/sales/order")
 
@@ -126,3 +138,24 @@ def AblyDataInfo(ably_id, ably_pw):
     df_pro.drop_duplicates(inplace=True)
     df_pro = df_pro.drop(columns=[0, 2, 3, 4, 12], axis=1)
     df_pro.columns = ['productNumber', 'productName', 'price', 'discountPeriod', 'discountPrice', 'registrationDate', 'statusDisplay', 'stock', 'totalReview', 'parcel', 'returnShippingCost', 'extraShippingCost']
+    
+    df_pro['price'] = df_pro['price'].str.replace(',', '')
+    df_pro['price'] = df_pro['price'].str.replace('원', '')
+    df_pro['price'] = df_pro['price'].astype('int')
+
+    df_pro['totalReview'] = df_pro['totalReview'].str.replace('개', '')
+    df_pro['totalReview'] = df_pro['totalReview'].astype('int')
+    
+    df['paymentDate'] = pd.to_datetime(df['paymentDate'])
+
+    df_pro['returnShippingCost'] = df_pro['returnShippingCost'].str.replace('원', '')
+    df_pro['returnShippingCost'] = df_pro['returnShippingCost'].str.replace(',', '')
+    df_pro['returnShippingCost'] = df_pro['returnShippingCost'].astype('int')
+
+    df_pro['extraShippingCost'] = df_pro['extraShippingCost'].str.replace('원', '')
+    df_pro['extraShippingCost'] = df_pro['extraShippingCost'].str.replace(',', '')
+    df_pro['extraShippingCost'] = df_pro['extraShippingCost'].astype('int')
+
+    df_pro['registrationDate'] = pd.to_datetime(df_pro['registrationDate'])
+
+    return df, df_pro
