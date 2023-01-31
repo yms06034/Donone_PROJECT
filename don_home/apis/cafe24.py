@@ -128,7 +128,7 @@ def call_total_api():
 
     # Order API 함수
     def get_cafe24_order_api(access_token, start_date, end_date):
-        api_url = f"https://{mall_id}.cafe24api.com/api/v2/admin/orders"
+        api_url = f"https://{mall_id}.cafe24api.com/api/v2/admin/orders?embed=items,return,cancellation,exchange"
 
         # header 및 param 설정
         api_headers = {
