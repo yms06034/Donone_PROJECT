@@ -70,7 +70,8 @@ def call_total_api():
 
         if after_pw: # 만일 '비밀번호 다음에 변경하기' 페이지가 나오면
             after_pw.click()
-            browser.implicitly_wait(10)
+            # browser.implicitly_wait(10)
+            time.sleep(3)
             try :
                 find_xpath('/html/body/div/div[3]/button[2]').click()
                 time.sleep(4)
