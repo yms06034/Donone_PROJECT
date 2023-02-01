@@ -16,7 +16,6 @@ from cp2_don.don_settings import MYSQL_CONN
 # engine = create_engine(MYSQL_CONN)
 # conn = engine.connect()
 
-
 def AblyDataInfo(ably_id, ably_pw):
     # Options Setting
     options = webdriver.ChromeOptions()
@@ -157,5 +156,7 @@ def AblyDataInfo(ably_id, ably_pw):
     df_pro['extraShippingCost'] = df_pro['extraShippingCost'].astype('int')
 
     df_pro['registrationDate'] = pd.to_datetime(df_pro['registrationDate'])
+    df_pro.reset_index(inplace=True)
 
     return df, df_pro
+

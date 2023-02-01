@@ -125,11 +125,23 @@ def ably(request):
     else:
         return render(request, 'user/ably.html')
 
+def get_ably_data(reqeust):
+    if reqeust.method == 'GET':
+        try:
+            ably_data = AblySalesInfo.objects.distinct()
+        except:
+            ably_data = AblySalesInfo.objects.all()
+        return JsonResponse(ably_data)
+
 @login_required
 def usertoken(request):
     if request.method == 'GET':
         data = Ably_token.objects.select_related('user').filter(user_id=request.user.id)
-        return render(request, 'user/token_info.html', {'data_list' : data}) 
+        if AblySalesInfo.objects.all():
+            results = AblySalesInfo.objects.raw('SELECT * FROM don_home_ablysalesinfo GROUP BY productOrderNumber')
+            print(results.query)
+            return render(request, 'user/token_info.html', {'data_list' : data,
+                                                            'ably_data' : results})
     elif request.method == 'POST':
         data2 = Ably_token.objects.select_related('user').filter(user_id=request.user.id).values('ably_id', 'ably_pw')
         ably_id = data2[0]['ably_id']
@@ -148,22 +160,28 @@ def usertoken(request):
                 orderStatus = df['orderStatus'][i],
                 user_id = request.user.id)
             ably_sales.save()
-        for a in range(len(df_pro['productName'])):
+        for i in range(len(df_pro['productNumber'])):
             ably_product = AblyProductInfo (
-                productNumber = df_pro['productNumber'][a],
-                productName = df_pro['productName'][a],
-                price = df_pro['price'][a],
-                discountPeriod = df_pro['discountPeriod'][a],
-                discountPrice = df_pro['discountPrice'][a],
-                registrationDate = df_pro['registrationDate'][a],
-                statusDisplay = df_pro['statusDisplay'][a],
-                stock = df_pro['stock'][a],
-                totalReview = df_pro['totalReview'][a],
-                parcel = df_pro['parcel'][a],
-                returnShippingCost = df_pro['returnShippingCost'][a],
-                extraShippingCost = df_pro['extraShippingCost'][a],
+                productNumber = df_pro['productNumber'][i],
+                productName = df_pro['productName'][i],
+                price = df_pro['price'][i],
+                discountPeriod = df_pro['discountPeriod'][i],
+                discountPrice = df_pro['discountPrice'][i],
+                registrationDate = df_pro['registrationDate'][i],
+                statusDisplay = df_pro['statusDisplay'][i],
+                stock = df_pro['stock'][i],
+                totalReview = df_pro['totalReview'][i],
+                parcel = df_pro['parcel'][i],
+                returnShippingCost = df_pro['returnShippingCost'][i],
+                extraShippingCost = df_pro['extraShippingCost'][i],
                 user_id = request.user.id)
             ably_product.save()
+
+            # try:
+            #     data = AblySalesInfo.objects.raw('SELECT * FROM don_home_ablysalesinfo GROUP BY productOrderNumber')
+            #     data.delete()
+            # except:
+            #     pass
         # data3 = Cafe24.objects.select_related('user').filter(user_id=request.user.id).values()
         # admin_id = data3[0]['cafe24_id']
         # admin_pw = data3[0]['cafe24_pw']
