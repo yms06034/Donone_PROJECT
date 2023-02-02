@@ -1,0 +1,65 @@
+.active {
+  font-weight: bold;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: #fff;
+  .header_main {
+    margin: 0;
+    padding: 0;
+    .main_inner {
+    display: flex;
+    align-items: center;
+    padding: 20px 40px;
+    height: 64px;
+    min-width: 320px;
+    justify-content: space-between;
+    .header_logo {
+      
+      .logo {
+        display: flex;
+        font-size: 26px;
+        font-weight: bold;
+        width: 120px;
+        height: 24px;
+        align-items: center;
+        }
+      }
+      .header_right {
+        display: flex;
+        min-width: 120px;
+        flex-shrink: 0;
+        justify-content: flex-end;
+        .gnb_area {
+          display: flex;
+          align-items: center;
+          margin-left: auto;
+          .gnb {
+            .gnb_list {
+              display: flex;
+              align-items: center;
+              list-style: none;
+              .gnb_item {
+                margin-right:40px;
+                &:last-child {
+                  margin-right: 0;
+                }
+                .gnb_link {
+                  position: relative;
+                  display: flex;
+                  font-size: 18px;
+                  letter-spacing: -.27px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

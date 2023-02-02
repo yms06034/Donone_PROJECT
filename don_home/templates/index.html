@@ -1,5 +1,17 @@
+{% extends "layout.html" %}
 
-{% block contents %}
+{% block title %}
+Main
+{% endblock %}
+
+{% block head %}
+  {{ block.super }}
+{% endblock %}
+
+{% block body %}
+<!-- header -->
+  {{ block.super }}
+
 <div class="row mt-5">
     <div class="col-12 text-center">
         <h1>홈페이지</h1>

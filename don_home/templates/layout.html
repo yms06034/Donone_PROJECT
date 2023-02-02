@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donone | {% block title %}{% endblock %}</title>
+
+  {% block head %}
+  <!--Google Icons-->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined" />
+  <!--Google Font-->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" />
+  <!--MDL CSS-->
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.amber-orange.min.css" /> 
+  <!--MDL Dialog Polyfill CSS-->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.0/dialog-polyfill.css">
+  <!--CSS Vars JS-->
+  <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@2"></script>
+  <script charset="utf-8">
+    cssVars({});
+    </script>
+    <!-- APP CSS -->
+    {% load static %}
+    {% load sass_tags %}
+    <link href="{% sass_src 'css/main.scss' %}" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="static/css/reset.css" type="text/css"/>
+    <!-- APP JS -->
+    <script src="static/js/app.js"></script>
+    <!--Jquery CDN JS-->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+        <!-- Link Swiper's CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+    <!-- swiper CDN JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+    <!--MDL Dialog Polyfill JS-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dialog-polyfill/0.5.6/dialog-polyfill.min.js" integrity="sha512-qUIG93zKzcLBVD5RGRbx2PBmbVRu+tJIl+EPLTus0z8I1AMru9sQYdlf6cBacSzYmZVncB9rcc8rYBnazqgrxA==" crossorigin="anonymous"></script>
+    <!--MDL JS-->
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  {% endblock %}
+</head>
+<body>
+  {% block body %}
+  <header>
+    <div class="header">
+      <div class="header_main">
+        <div class="main_inner">
+          <div class="header_logo">
+            <a href="/" aria-label="홈" class="logo">돈원결의</a>
+          </div>
+          <div class="header_right">
+            <div class="gnb_area">
+              <nav class="gnb">
+                <ul class="gnb_list">
+                  {% if user.is_authenticated %}
+                  <li class="gnb_item">
+                    <a class="gnb_link active" href="/">HOME</a>
+                  </li>
+                  <li class="gnb_item">
+                    <a class="gnb_link" href="/">DASHBORAD</a>
+                  </li>
+                  <li class="gnb_item">
+                    <a class="gnb_link active" href="/">로그인</a>
+                  </li>
+                  {% else %}
+                  <button class="btn btn-primary btn-block" onclick="location.href='/login/'">로그인</button>
+                  <button class="btn btn-primary btn-block" onclick="location.href='/signup/'">회원가입</button>
+                  {% endif %}
+                </ul>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  {% endblock %}
+  {% block footer %}
+  <footer class="footer">
+    <div class="inner">
+      <ul class="menu">
+        <li><a href="javascript:void(0)" class="green">개인정보처리방침</a></li>
+        <li><a href="javascript:void(0)">첫걸음 운영방침</a></li>
+        <li><a href="javascript:void(0)">홈페이지 이용약관</a></li>
+        <li><a href="javascript:void(0)">위치정보 이용약관</a></li>
+        <li><a href="javascript:void(0)">회원정보 이용약관</a></li>
+      </ul>
+      <div class="btn-group">
+        <a href="javascript:void(0)" class="btn btn--black">신규광고 문의</a>
+        <a href="javascript:void(0)" class="btn btn--black">찾아오시는 길</a>
+        <a href="javascript:void(0)" class="btn btn--black">사이트 맵</a>
+      </div>
+      <div class="info">
+        <span>사업자등록번호 000-00-00000</span>
+        <span>(주) FIRSTSTEP 대표 김성진</span>
+        <span>TEL : 010-0000-0000</span>
+        <span>개인정보 책임자 : 김성진</span>
+      </div>
+      <p class="copyright">
+        ©
+        <span class="this-year">2022</span>
+        Firststep Company. All Rights Reserved.
+      </p>
+    </div>
+  </footer>
+  {% endblock %}
+</body>
+</html>

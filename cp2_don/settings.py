@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from cp2_don import don_settings
 import pymysql
+import os
 
 pymysql.install_as_MySQLdb()
 
@@ -45,12 +46,26 @@ INSTALLED_APPS = [
     'rest_framework',
     'don_home',
     # 'debug_toolbar',
-    'six'
+    'six',
+    'sass_processor',
+]
+
+# SCSS SETTING
+SASS_PROCESSOR_ENABLED = True
+SASS_PROCESSOR_ROOT = os.path.join(BASE_DIR, 'static')
+SASS_OUTPUT_STYLE = 'nested'
+SASS_PRECISION = 8
+
+STATICFILES_FINDERS  = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'sass_processor.finders.CssFinder',
 ]
 
 INTERNAL_IPS = [
     '127.0.0.1'
 ]
+
 
 # CORS
 CORS_ORIGIN_ALLOW_ALL=True
@@ -160,6 +175,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = ( os.path.join('static'), )
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
