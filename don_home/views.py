@@ -6,8 +6,6 @@ from django.contrib import auth
 from django.contrib.auth.forms import AuthenticationForm, PasswordResetForm, PasswordChangeForm
 from django.contrib.auth.decorators import login_required
 
-from rest_framework.parsers import JSONParser
-
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
@@ -15,11 +13,17 @@ from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.utils.encoding import force_bytes, force_text
 from .tokens import account_activation_token
+from sqlalchemy import create_engine
 
 from don_home.models import Ably_token, Cafe24, AblyProductInfo, AblySalesInfo
-from don_home.serializers import AblySerializer, Cafe24Serializer
+from don_home.serializers import AblySerializer, Cafe24Serializer, AblyProductSerializer, AblySalseSerializer
 from don_home.apis.ably import AblyDataInfo
 from don_home.apis.cafe24 import call_total_api
+
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
+from rest_framework.parsers import JSONParser
 
 
 
@@ -219,3 +223,72 @@ def cafe24(request):
     else:
         return render(request, 'user/cafe24.html')
 
+# DRF
+@api_view(['GET', 'POST'])
+def ablyproduct_api(request):
+    if request.method == 'GET':
+        ably_info = Ably_token.objects.select_related('user').values('ably_id', 'ably_pw')
+        ably_id = ably_info[0]['ably_id']
+        ably_pw = ably_info[0]['ably_pw']
+
+        df, df_pro = AblyDataInfo(ably_id, ably_pw)
+        for i in range(len(df_pro['productNumber'])):
+            ably_product = AblyProductInfo (
+                productNumber = df_pro['productNumber'][i],
+                productName = df_pro['productName'][i],
+                price = df_pro['price'][i],
+                discountPeriod = df_pro['discountPeriod'][i],
+                discountPrice = df_pro['discountPrice'][i],
+                registrationDate = df_pro['registrationDate'][i],
+                statusDisplay = df_pro['statusDisplay'][i],
+                stock = df_pro['stock'][i],
+                totalReview = df_pro['totalReview'][i],
+                parcel = df_pro['parcel'][i],
+                returnShippingCost = df_pro['returnShippingCost'][i],
+                extraShippingCost = df_pro['extraShippingCost'][i],
+                user_id = request.user.id)
+            ably_product.save()
+        
+        articles = AblyProductInfo.objects.raw('SELECT * FROM don_home_ablyproductinfo GROUP BY productNumber')
+        serializer = AblyProductSerializer(articles, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = AblyProductSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'POST'])
+def ablysales_api(request):
+    if request.method == 'GET':
+        ably_info = Ably_token.objects.select_related('user').values('ably_id', 'ably_pw')
+        ably_id = ably_info[0]['ably_id']
+        ably_pw = ably_info[0]['ably_pw']
+
+        df, df_pro = AblyDataInfo(ably_id, ably_pw)
+        for i in range(len(df['paymentDate'])):
+            ably_sales = AblySalesInfo (
+                paymentDate = df['paymentDate'][i],
+                productOrderNumber = df['productOrderNumber'][i],
+                orderNumber = df['orderNumber'][i],
+                productName = df['productName'][i],
+                options = df['options'][i],
+                total = df['total'][i],
+                orderName = df['orderName'][i],
+                phoneNumber = df['phoneNumber'][i],
+                orderStatus = df['orderStatus'][i],
+                user_id = request.user.id)
+            ably_sales.save()
+
+        articles = AblySalesInfo.objects.raw('SELECT * FROM don_home_ablysalesinfo GROUP BY productOrderNumber')
+        serializer = AblySalseSerializer(articles, many=True)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        serializer = AblySalseSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

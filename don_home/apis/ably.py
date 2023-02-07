@@ -1,20 +1,13 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
 import time
 import pyperclip
 import pandas as pd
-import pymysql
-from sqlalchemy import create_engine
-
-from cp2_don.don_settings import MYSQL_CONN
-# MySQL Connector using pymysql
-# pymysql.install_as_MySQLdb()
-
-# import MySQLdb
-
-# engine = create_engine(MYSQL_CONN)
-# conn = engine.connect()
 
 def AblyDataInfo(ably_id, ably_pw):
     # Options Setting
@@ -26,9 +19,8 @@ def AblyDataInfo(ably_id, ably_pw):
     options.add_argument('incognito')
     # options.add_argument('--headless')
     # Header Setting
-    options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36")
-
-    browser = webdriver.Chrome("chromedriver.exe" ,options=options)
+    service = Service(ChromeDriverManager().install())
+    browser = webdriver.Chrome(service=service, options=options)
 
     browser.get("https://my.a-bly.com/sales/order")
 
@@ -159,4 +151,3 @@ def AblyDataInfo(ably_id, ably_pw):
     df_pro.reset_index(inplace=True)
 
     return df, df_pro
-

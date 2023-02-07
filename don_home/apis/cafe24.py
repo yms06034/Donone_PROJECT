@@ -4,6 +4,9 @@ import base64
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
 import time
 import pyperclip
 from datetime import datetime, timedelta
@@ -23,7 +26,7 @@ def call_total_api(admin_id, admin_pw, client_id, client_secret, mall_id, encode
         options.add_argument('--start-maximized')
         # options.add_argument("headless") # 백그라운드 실행 (만일 창 보이게 하고 싶으면 주석 처리)
 
-        options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36")
+        browser = Service(ChromeDriverManager().install())
 
         browser = webdriver.Chrome("./chromedriver.exe" ,options=options)
 

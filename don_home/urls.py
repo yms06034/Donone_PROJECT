@@ -10,8 +10,10 @@ urlpatterns = [
     path('logout/', views.logout, name="logout"),
     path('activate/<str:uid64>/<str:token>/', views.activate, name="activate"),
     path('api/checkeusername', views.checkeusername, name="checkeusername"),
-    path('api/ablydata', views.get_ably_data, name='getablydata'),
-    path('user/ably' , views.ably, name='ably'),
-    path('user/data' , views.usertoken, name='usertoken'),
-    path('user/cafe24' , views.cafe24, name='cafe24'),
+    path('api/ablydata/', views.get_ably_data, name='getablydata'),
+    path('user/ably/' , views.ably, name='ably'),
+    path('user/data/' , views.usertoken, name='usertoken'),
+    path('user/cafe24/' , views.cafe24, name='cafe24'),
+    path('api/ablyproduct/', views.ablyproduct_api),
+    path('api/ablysales/', views.ablysales_api)
 ]

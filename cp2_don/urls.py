@@ -17,9 +17,15 @@ import debug_toolbar
 from django.contrib import admin
 from django.urls import path, include
 
+from rest_framework import urls
+from rest_framework import routers
+from rest_framework.routers import DefaultRouter
+
+router=DefaultRouter(trailing_slash=False)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     # path('__debug__', include(debug_toolbar.urls)),
-    path('api-auth,', include('rest_framework.urls', namespace='rest_framework')),
+    path('api-auth/,', include('rest_framework.urls', namespace='rest_framework')),
     path('', include('don_home.urls')),
 ]
