@@ -1,6 +1,12 @@
 .active {
   font-weight: bold;
 }
+.blank {
+  margin-right: 17px;
+}
+
+
+
 
 .header {
   position: fixed;
@@ -163,6 +169,27 @@
     .corporation_area {
       position: relative;
       margin-top: 30px;
+      .cor_list {
+        padding-bottom: 16px;
+        display: inline-flex;
+        .cor_item {
+          margin-right: 20px;
+        }
+        .cor_item_pra {
+          margin-right: 20px;
+          font-weight: bold;
+        }
+      }
+    }
+    .business_info {
+      .info_list {
+        .info_item {
+          .business_title {
+            font-weight: 500;
+            color: rgba(34,34,34,.5);
+          }
+        }
+      }
     }
   }
 }
