@@ -63,3 +63,106 @@
     }
   }
 }
+
+.footer {
+  padding: 50px 40px;
+  border-top: 1px solid #ebebeb;
+  .inner {
+    position: relative;
+    .service_menu {
+      display:flex;
+      flex-direction: row-reverse;
+      justify-content:space-between;
+      padding-bottom: 56px;
+      border-bottom: 1px solid #ebebeb;
+      .service_title {
+        display: inline-flex;
+        align-items: center;
+        letter-spacing: -.16px;
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .sub_area {
+        padding-top: 8px;
+        font-weight: none;
+        .sub_text {
+          line-height: 17px;
+          .sub_content {
+            max-width: 263px;
+            float: left;
+            font-size: 13px;
+            letter-spacing: -.07px;
+            color: rgba(34,34,34,.5);
+            line-height: 20px;
+            font-weight:500;
+            &::after {
+              float: left;
+              font-size: 13px;
+              letter-spacing: -.07px;
+              color: rgba(34,34,34,.5);
+              max-width: 263px;
+              line-height: 20px;
+            }
+          }
+        }
+      }
+      .footer_menu {
+        display: flex;
+        .menu_box {
+          width: 160px;
+          .menu_title {
+            font-size: 16px;
+            letter-spacing: -.16px;
+          }
+          .menu_list {
+            padding-top: 8px;
+            float: left;
+            font-size: 14px;
+            letter-spacing: -.07px;
+            color: rgba(34,34,34,.5);
+            line-height: 24px;
+            .menu_itme {
+              padding-top: 6px;
+              .menu_link {
+                display: inline-block;
+                font-size: 14px;
+                letter-spacing: -.21px;
+                color: rgba(34,34,34,.5);
+              }
+            }
+          }
+        }
+        .menu_box_se {
+          width: 160px;
+          margin-left: 80px;
+          .menu_title {
+            font-size: 16px;
+            letter-spacing: -.16px;
+            display: flex;
+          }
+          .menu_list {
+            padding-top: 8px;
+            float: left;
+            font-size: 14px;
+            letter-spacing: -.07px;
+            color: rgba(34,34,34,.5);
+            line-height: 24px;
+            .menu_itme {
+              padding-top: 6px;
+              .menu_link {
+                display: inline-block;
+                font-size: 14px;
+                letter-spacing: -.21px;
+                color: rgba(34,34,34,.5);
+              }
+            }
+          }
+        }
+      }
+    }
+    .corporation_area {
+      position: relative;
+      margin-top: 30px;
+    }
+  }
+}

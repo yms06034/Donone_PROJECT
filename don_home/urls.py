@@ -15,5 +15,6 @@ urlpatterns = [
     path('user/data/' , views.usertoken, name='usertoken'),
     path('user/cafe24/' , views.cafe24, name='cafe24'),
     path('api/ablyproduct/', views.ablyproduct_api),
-    path('api/ablysales/', views.ablysales_api)
+    path('api/ablysales/', views.ablysales_api),
+    path('api/cafe24all/', views.cafe24all_api),
 ]

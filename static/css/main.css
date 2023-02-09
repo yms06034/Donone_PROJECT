@@ -48,4 +48,84 @@
                 font-size: 18px;
                 letter-spacing: -.27px; }
 
+.footer {
+  padding: 50px 40px;
+  border-top: 1px solid #ebebeb; }
+  .footer .inner {
+    position: relative; }
+    .footer .inner .service_menu {
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: space-between;
+      padding-bottom: 56px;
+      border-bottom: 1px solid #ebebeb; }
+      .footer .inner .service_menu .service_title {
+        display: inline-flex;
+        align-items: center;
+        letter-spacing: -.16px;
+        font-size: 16px;
+        font-weight: bold; }
+      .footer .inner .service_menu .sub_area {
+        padding-top: 8px;
+        font-weight: none; }
+        .footer .inner .service_menu .sub_area .sub_text {
+          line-height: 17px; }
+          .footer .inner .service_menu .sub_area .sub_text .sub_content {
+            max-width: 263px;
+            float: left;
+            font-size: 13px;
+            letter-spacing: -.07px;
+            color: rgba(34, 34, 34, 0.5);
+            line-height: 20px;
+            font-weight: 500; }
+            .footer .inner .service_menu .sub_area .sub_text .sub_content::after {
+              float: left;
+              font-size: 13px;
+              letter-spacing: -.07px;
+              color: rgba(34, 34, 34, 0.5);
+              max-width: 263px;
+              line-height: 20px; }
+      .footer .inner .service_menu .footer_menu {
+        display: flex; }
+        .footer .inner .service_menu .footer_menu .menu_box {
+          width: 160px; }
+          .footer .inner .service_menu .footer_menu .menu_box .menu_title {
+            font-size: 16px;
+            letter-spacing: -.16px; }
+          .footer .inner .service_menu .footer_menu .menu_box .menu_list {
+            padding-top: 8px;
+            float: left;
+            font-size: 14px;
+            letter-spacing: -.07px;
+            color: rgba(34, 34, 34, 0.5);
+            line-height: 24px; }
+            .footer .inner .service_menu .footer_menu .menu_box .menu_list .menu_itme {
+              padding-top: 6px; }
+              .footer .inner .service_menu .footer_menu .menu_box .menu_list .menu_itme .menu_link {
+                display: inline-block;
+                font-size: 14px;
+                letter-spacing: -.21px;
+                color: rgba(34, 34, 34, 0.5); }
+        .footer .inner .service_menu .footer_menu .menu_box_se {
+          width: 160px;
+          margin-left: 80px; }
+          .footer .inner .service_menu .footer_menu .menu_box_se .menu_title {
+            font-size: 16px;
+            letter-spacing: -.16px;
+            display: flex; }
+          .footer .inner .service_menu .footer_menu .menu_box_se .menu_list {
+            padding-top: 8px;
+            float: left;
+            font-size: 14px;
+            letter-spacing: -.07px;
+            color: rgba(34, 34, 34, 0.5);
+            line-height: 24px; }
+            .footer .inner .service_menu .footer_menu .menu_box_se .menu_list .menu_itme {
+              padding-top: 6px; }
+              .footer .inner .service_menu .footer_menu .menu_box_se .menu_list .menu_itme .menu_link {
+                display: inline-block;
+                font-size: 14px;
+                letter-spacing: -.21px;
+                color: rgba(34, 34, 34, 0.5); }
+
 /*# sourceMappingURL=main.css.map */

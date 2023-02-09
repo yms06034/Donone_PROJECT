@@ -1,0 +1,51 @@
+.active {
+  font-weight: bold; }
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: #fff; }
+  .header .header_main {
+    margin: 0;
+    padding: 0; }
+    .header .header_main .main_inner {
+      display: flex;
+      align-items: center;
+      padding: 20px 40px;
+      height: 64px;
+      min-width: 320px;
+      justify-content: space-between; }
+      .header .header_main .main_inner .header_logo .logo {
+        display: flex;
+        font-size: 26px;
+        font-weight: bold;
+        width: 120px;
+        height: 24px;
+        align-items: center; }
+      .header .header_main .main_inner .header_right {
+        display: flex;
+        min-width: 120px;
+        flex-shrink: 0;
+        justify-content: flex-end; }
+        .header .header_main .main_inner .header_right .gnb_area {
+          display: flex;
+          align-items: center;
+          margin-left: auto; }
+          .header .header_main .main_inner .header_right .gnb_area .gnb .gnb_list {
+            display: flex;
+            align-items: center;
+            list-style: none; }
+            .header .header_main .main_inner .header_right .gnb_area .gnb .gnb_list .gnb_item {
+              margin-right: 40px; }
+              .header .header_main .main_inner .header_right .gnb_area .gnb .gnb_list .gnb_item:last-child {
+                margin-right: 0; }
+              .header .header_main .main_inner .header_right .gnb_area .gnb .gnb_list .gnb_item .gnb_link {
+                position: relative;
+                display: flex;
+                font-size: 18px;
+                letter-spacing: -.27px; }
+
+/*# sourceMappingURL=main.css.map */

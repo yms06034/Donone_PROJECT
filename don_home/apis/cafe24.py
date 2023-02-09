@@ -28,9 +28,8 @@ def cafe24_df(admin_id, admin_pw, client_id, client_secret, mall_id, encode_csrf
             options.add_argument('--start-maximized')
             # options.add_argument("headless") # 백그라운드 실행 (만일 창 보이게 하고 싶으면 주석 처리)
 
-            options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36")
-
-            browser = webdriver.Chrome("./chromedriver.exe" ,options=options)
+            service = Service(ChromeDriverManager().install())
+            browser = webdriver.Chrome(service=service, options=options)
 
             browser.get(Request_URL)
 

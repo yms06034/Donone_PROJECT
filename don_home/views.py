@@ -12,18 +12,22 @@ from django.utils.http import urlsafe_base64_encode,urlsafe_base64_decode
 from django.core.mail import EmailMessage
 from django.core.mail import send_mail
 from django.utils.encoding import force_bytes, force_text
+
 from .tokens import account_activation_token
+from cp2_don.don_settings import MYSQL_CONN
 from sqlalchemy import create_engine
 
 from don_home.models import Ably_token, Cafe24, AblyProductInfo, AblySalesInfo
 from don_home.serializers import AblySerializer, Cafe24Serializer, AblyProductSerializer, AblySalseSerializer
 from don_home.apis.ably import AblyDataInfo
-from don_home.apis.cafe24 import call_total_api
+from don_home.apis.cafe24 import cafe24_df
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from rest_framework.parsers import JSONParser
+
+
 
 
 
@@ -292,3 +296,38 @@ def ablysales_api(request):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET', 'POST'])
+def cafe24all_api(request):
+    if request.method == 'GET':
+        cafe24_info = Cafe24.objects.select_related('user').values('cafe24_id','cafe24_pw','cafe24_clientid',
+                                                                   'cafe24_client_secret','cafe24_mallid',
+                                                                   'cafe24_encode_csrf_token','cafe24_redirect_uri',)
+        cafe24_id = cafe24_info[0]['cafe24_id']
+        cafe24_pw = cafe24_info[0]['cafe24_pw']
+        clientid = cafe24_info[0]['cafe24_clientid']
+        client_secret = cafe24_info[0]['cafe24_client_secret']
+        mallid = cafe24_info[0]['cafe24_mallid']
+        encode_csrf_token = cafe24_info[0]['cafe24_encode_csrf_token']
+        redirect_uri = cafe24_info[0]['cafe24_redirect_uri']
+        
+        category_df, product_df, order_df, coupon_df = cafe24_df(cafe24_id, cafe24_pw, clientid, client_secret, mallid, encode_csrf_token, redirect_uri)
+
+        engine = create_engine(MYSQL_CONN)
+
+        tableName='don_home_cafe24category'
+        category_df.to_sql(name=tableName, con=engine, index=False, if_exists='replace')
+
+        tableName1='don_home_cafe24product'
+        product_df.to_sql(name=tableName1, con=engine, index=False, if_exists='replace')
+
+        tableName2='don_home_cafe24order'
+        order_df.to_sql(name=tableName2, con=engine, index=False, if_exists='replace')
+
+        tableName3='don_home_cafe24coupon'
+        coupon_df.to_sql(name=tableName3, con=engine, index=False, if_exists='replace')
+
+
+
+        return Response(cafe24_info)

@@ -60,11 +60,15 @@
                     <a class="gnb_link" href="/">DASHBORAD</a>
                   </li>
                   <li class="gnb_item">
-                    <a class="gnb_link active" href="/">로그인</a>
+                    <button class="gnb_link" onclick="location.href='/logout/'">로그아웃</button>
                   </li>
                   {% else %}
-                  <button class="btn btn-primary btn-block" onclick="location.href='/login/'">로그인</button>
-                  <button class="btn btn-primary btn-block" onclick="location.href='/signup/'">회원가입</button>
+                  <li class="gnb_item">
+                    <button class="gnb_link" onclick="location.href='/login/'">로그인</button>  
+                  </li>
+                  <li class="gnb_item">
+                    <button class="gnb_link" onclick="location.href='/signup/'">회원가입</button>
+                  </li>
                   {% endif %}
                 </ul>
               </nav>
@@ -78,13 +82,56 @@
   {% block footer %}
   <footer class="footer">
     <div class="inner">
-      <ul class="menu">
-        <li><a href="javascript:void(0)" class="green">개인정보처리방침</a></li>
-        <li><a href="javascript:void(0)">첫걸음 운영방침</a></li>
-        <li><a href="javascript:void(0)">홈페이지 이용약관</a></li>
-        <li><a href="javascript:void(0)">위치정보 이용약관</a></li>
-        <li><a href="javascript:void(0)">회원정보 이용약관</a></li>
-      </ul>
+
+      <div class="service_menu">
+        <div>
+          <a href="javascript:void(0)" class="service_title">문의센터</a>
+          <div class="sub_area">
+            <dl class="sub_text">
+              <dt class="sub_content"> 
+                운영시간 평일 11:00 - 18:00 (토∙일, 공휴일 휴무) 점심시간 평일 13:00 - 14:00
+              </dt>
+            </dl>
+          </div>
+        </div>
+        <div class="footer_menu">
+          <div class="menu_box">
+            <strong class="menu_title">
+              이용안내
+            </strong>
+            <ul class="menu_list">
+              <li class="menu_item">
+                <a class="menu_link" href="javascript:void(0)">이용정책</a>
+              </li>
+              <li class="menu_item">
+                <a class="menu_link" href="javascript:void(0)">커뮤니티 가이드라인</a>
+              </li>
+              <li class="menu_item">
+                <a class="menu_link" href="javascript:void(0)">이용방법</a>
+              </li>
+            </ul>
+          </div>
+          <div class="menu_box_se">
+            <strong class="menu_title">
+              고객지원
+            </strong>
+            <ul class="menu_list">
+              <li class="menu_item">
+                <a class="menu_link" href="javascript:void(0)">공지사항</a>
+              </li>
+              <li class="menu_item">
+                <a class="menu_link" href="javascript:void(0)">서비스 소개</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="corporation_area">
+        <ul class="">
+
+        </ul>
+      </div>
       <div class="btn-group">
         <a href="javascript:void(0)" class="btn btn--black">신규광고 문의</a>
         <a href="javascript:void(0)" class="btn btn--black">찾아오시는 길</a>
@@ -92,14 +139,15 @@
       </div>
       <div class="info">
         <span>사업자등록번호 000-00-00000</span>
-        <span>(주) FIRSTSTEP 대표 김성진</span>
+        <span>(주) Donone 대표 배혜빈</span>
         <span>TEL : 010-0000-0000</span>
-        <span>개인정보 책임자 : 김성진</span>
+        <span>개인정보 책임자 : 장선영</span>
+        <span>기술 책임자 : 박건후</span>
       </div>
       <p class="copyright">
         ©
-        <span class="this-year">2022</span>
-        Firststep Company. All Rights Reserved.
+        <span class="this-year">2023</span>
+        Donone Company. All Rights Reserved.
       </p>
     </div>
   </footer>

@@ -58,6 +58,7 @@ PyMySQL==1.0.2
 pyperclip==1.8.2
 PySocks==1.7.1
 python-dateutil==2.8.2
+python-dotenv==0.21.1
 python-utils==3.4.5
 pytz==2022.7.1
 pywin32==305
@@ -75,6 +76,7 @@ sqlparse==0.4.3
 stack-data==0.6.2
 toml==0.10.2
 tornado==6.2
+tqdm==4.64.1
 traitlets==5.9.0
 trio==0.22.0
 trio-websocket==0.9.2
@@ -82,5 +84,6 @@ typing_extensions==4.4.0
 urllib3==1.26.14
 utils==1.0.1
 wcwidth==0.2.6
+webdriver-manager==3.8.5
 wsproto==1.2.0
 zipp==3.12.0
