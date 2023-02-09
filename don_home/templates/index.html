@@ -12,25 +12,22 @@ Main
 <!-- header -->
   {{ block.super }}
 
-<div class="row mt-5">
-    <div class="col-12 text-center">
-        <h1>홈페이지</h1>
+<div class="main_container">
+  <div class="main_top_area">
+    <div class="main_banner">
+      <img class="img_banner" src="https://kream-phinf.pstatic.net/MjAyMzAyMDNfNTMg/MDAxNjc1MzkxMzIxMzAx.xtUjVG9i3YqPtfw8XJoBc0uWxS6TrFdwf-CBELg9kqgg.DNgPY6NGFvLslnrrNoVj64muHXjoSUBM8LZk40F8JOsg.JPEG/a_cf1b6bc24a914eb6a91c16fe2cec3343.jpg?type=m_2560_webp" alt="">
     </div>
-</div>
+  </div>
 {{ user }}
 <!-- 사용자가 로그인 이후 보여지는 페이지 -->
 {% if user.is_authenticated %}
-<p><a href="{% url 'app:ably' %}">에이블리</a></p>
-<p><a href="{% url 'app:cafe24' %}">카페24</a></p>
-<p><a href="{% url 'app:usertoken' %}">입력 정보 보러가기</a></p>
-<!-- <button class="btn btn-primary btn-block" onclick="location.href='/user/ably'">에이블리</button> -->
+  <p><a href="{% url 'app:ably' %}">에이블리</a></p>
+  <p><a href="{% url 'app:cafe24' %}">카페24</a></p>
+  <p><a href="{% url 'app:usertoken' %}">입력 정보 보러가기</a></p>
 
 <!-- 로그인 하기 전에 보여지는 페이지 -->
 {% else %}
-
+</div>
 {% endif %}
 
-{% endblock %}
-{% block footer %}
-{{ blcok.super }}
 {% endblock %}

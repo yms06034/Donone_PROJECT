@@ -15,6 +15,7 @@
     margin: 0;
     padding: 0; }
     .header .header_main .main_inner {
+      border-bottom: 1px solid #ededed;
       display: flex;
       align-items: center;
       padding: 20px 40px;
@@ -74,7 +75,6 @@
         .footer .inner .service_menu .sub_area .sub_text {
           line-height: 17px; }
           .footer .inner .service_menu .sub_area .sub_text .sub_content {
-            max-width: 263px;
             float: left;
             font-size: 13px;
             letter-spacing: -.07px;
@@ -86,7 +86,6 @@
               font-size: 13px;
               letter-spacing: -.07px;
               color: rgba(34, 34, 34, 0.5);
-              max-width: 263px;
               line-height: 20px; }
       .footer .inner .service_menu .footer_menu {
         display: flex; }
@@ -144,5 +143,17 @@
     .footer .inner .business_info .info_list .info_item .business_title {
       font-weight: 500;
       color: rgba(34, 34, 34, 0.5); }
+
+.main_container {
+  padding-top: 120px; }
+  .main_container .main_top_area {
+    display: flex;
+    height: 400px; }
+    .main_container .main_top_area .main_banner {
+      position: relative;
+      width: 100vw; }
+      .main_container .main_top_area .main_banner .img_banner {
+        width: 100%;
+        height: 100%; }
 
 /*# sourceMappingURL=main.css.map */
