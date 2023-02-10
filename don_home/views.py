@@ -69,7 +69,7 @@ def signup(request):
                 '</div>'
             )
 
-    return render(request, 'register/signup.html')
+    return render(request, 'signup.html')
 
 @csrf_exempt
 def login(request):
@@ -84,10 +84,10 @@ def login(request):
                 msg = '로그인 성공'
                 auth.login(request, user)
                 return redirect('app:index')
-        return render(request, "register/login.html", {"form": form, "msg" : msg})
+        return render(request, "login.html", {"form": form, "msg" : msg})
     else:
         form = AuthenticationForm()
-        return render(request, 'register/login.html', {'form' : form})
+        return render(request, 'login.html', {'form' : form})
 
 def logout(request):
     auth.logout(request)

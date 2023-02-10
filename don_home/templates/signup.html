@@ -1,0 +1,139 @@
+{% extends "layout.html" %}
+
+{% block title %}
+회원가입
+{% endblock %}
+
+{% block head %}
+  {{ block.super }}
+  	{% load static %}
+    {% load sass_tags %}
+    <link href="{% sass_src 'css/main.scss' %}" rel="stylesheet" type="text/css" />
+    <link href="{% sass_src 'css/register.scss' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block body %}
+<!-- header -->
+  {{ block.super }}
+<div class="signup_area">
+  <div class="signup_container">
+    <div class="signup_title">
+      <div class="head_title">
+        회원가입
+      </div>
+    </div>
+
+    <div class="signup_form">
+      <form method="POST" action="{% url 'app:signup'%}">
+      {% csrf_token %}
+      <div class="form_groupid">
+        <label class="label" for="username">아이디
+          <span class="required-field">*</span>
+        </label>
+        <div class="form_groupinput">
+          <input class="id_forminput" id="username" required name="username" type="text" placeholder="ID">
+          <input class="id_check" id="btn-username" type="button" value="중복확인">
+        </div>
+      </div>
+      <div class="form_groupid">
+        <label class="label_tn" for="email">이메일
+          <span class="required-field">*</span>
+        </label>
+        <input placeholder="example@donone.com" class="id_forminput_tn" id="email" required name="email" type="email" value="">
+        <span class="info_text">이메일을 제대로 입력해주셔야지만 회원가입이 가능합니다.</span>
+      </div>
+      <div class="form_groupid">
+        <label class="label_tn"  for="fullname">이름
+          <span class="required-field">*</span>
+        </label>
+        <input class="id_forminput_tn" id="fullname" required name="fullname" type="text" placeholder="실명을 입력해주세요" value="">
+      </div>
+      <div class="form_groupid">
+        <label class="label_tn"  for="password1">Password
+          <span class="required-field">*</span>
+        </label>
+        <input class="id_forminput_tn" name="password1" required type="password" value="" placeholder="영문,숫자,특수문자 중 2종류 이상 포함 8자 이상">
+        <label class="block-label" for="password2"></label>
+        <input class="id_forminput_tn top" placeholder="비밀번호 확인" name="password2" required type="password" value="">
+      </div>
+
+      <input class="submit_signup" type="submit" id="join-submit" id_check_result="fail" value="가입하기">
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src='//code.jquery.com/ui/1.11.4/jquery-ui.js'></script>
+<script>
+	/* 중복체크! */
+	$(function(){
+		/* 아이디 수정했을 때 */
+		// $('#email').change(function () {
+		// 	$('#img-email').hide();
+		// 	$('#btn-email').show();
+		// });
+
+		$('#btn-username').click(function(){
+			let username = $('#username').val()
+			if(username == ''){
+				alert('아이디를 입력해주세요.')
+				return;
+			}
+
+			$.ajax({
+				url:'/api/checkeusername?username='+username,
+				type:'get',
+				dataType:'json',
+				success:function(response){
+					if(response.result != 'success'){
+						console.error(response.data)
+						return;
+					}
+					if(response.data == 'exist'){
+						alert("이미 존재하는 ID 입니다.");
+						$('#username').val('').focus();
+						return;
+					}else{
+						$('#img-username').show();
+						$('#btn-username').hide();
+						$("#join-submit").attr("id_check_result", "success");
+						return;
+					}
+					// console.log(response)
+				},
+                error : function(xhr, error){
+					alert("서버와의 통신에서 문제가 발생했습니다.");
+					console.error("error : " + error);
+				}
+			})
+		});
+
+    $('#join-form').submit(function() {
+		   if($("input:checkbox[id='agree-prov']").is(":checked") == false) {
+		      alert("약관동의를 확인하여 주시기 바랍니다.");
+		      return false;
+		   }
+
+		   console.log($("#join-submit").attr("id_check_result"));
+
+		   if($("#join-submit").attr("id_check_result") == "fail") {
+		      alert("id 중복체크를 해주시기 바랍니다.");
+		      $("#email").focus();
+		      return false;
+		   }
+		});
+
+		$("#email").on("propertychange change keyup paste input", function(){
+		   $('#img-email').hide();
+		   $('#btn-email').show();
+		   $("#join-submit").attr("id_check_result", "fail");
+		});
+	});
+</script>
+
+{% endblock %}
+{% block footer %}
+  {{ block.super }}
+{% endblock %}
