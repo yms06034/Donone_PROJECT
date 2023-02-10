@@ -50,13 +50,31 @@ Main
     </div>
   </div>
 </div>
-  <!-- Swiper -->
 
 <!-- 사용자가 로그인 이후 보여지는 페이지 -->
 {% if user.is_authenticated %}
-  <p><a href="{% url 'app:ably' %}">에이블리</a></p>
-  <p><a href="{% url 'app:cafe24' %}">카페24</a></p>
-  <p><a href="{% url 'app:usertoken' %}">입력 정보 보러가기</a></p>
+<div class="user_container">
+  <div class="user_item">
+    <a class="user_link" href="{% url 'app:ably' %}">
+      <div class="user_content">
+        <img class="user_img" src="https://image.rocketpunch.com/company/29834/paletteco_logo_1556522541.png?s=400x400&t=inside" alt="" />
+      </div>
+    </a>
+    <a class="user_link" href="{% url 'app:cafe24' %}">
+      <div class="user_content">
+        <img class="user_img" src="https://image.rocketpunch.com/company/29834/paletteco_logo_1556522541.png?s=400x400&t=inside" alt="" />
+      </div>
+    </a>
+    <a class="user_link" href="{% url 'app:cafe24' %}">
+      <div class="user_content">
+        <img class="user_img" src="https://image.rocketpunch.com/company/29834/paletteco_logo_1556522541.png?s=400x400&t=inside" alt="" />
+      </div>
+    </a>
+
+  
+
+  <!-- <p><a href="{% url 'app:usertoken' %}">입력 정보 보러가기</a></p> -->
+</div>
 
 <!-- 로그인 하기 전에 보여지는 페이지 -->
 {% else %}

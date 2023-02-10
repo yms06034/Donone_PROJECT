@@ -24,7 +24,8 @@
     {% load static %}
     {% load sass_tags %}
     <link href="{% sass_src 'css/main.scss' %}" rel="stylesheet" type="text/css" />
-    
+    <!-- favicon.ico -->
+    <link rel="icon" href="/static/img/favicon.ico">
     <link rel="stylesheet" href="static/css/reset.css" type="text/css"/>
     <!-- APP JS -->
     <script src="static/js/app.js"></script>
@@ -59,6 +60,9 @@
                   </li>
                   <li class="gnb_item">
                     <a class="gnb_link" href="/">DASHBORAD</a>
+                  </li>
+                  <li class="gnb_item">
+                    <a class="gnb_link" href="/">마이페이지</a>
                   </li>
                   <li class="gnb_item">
                     <button class="gnb_link" onclick="location.href='/logout/'">로그아웃</button>

@@ -133,7 +133,6 @@ body {
                 margin-right: 0; }
               .header .header_main .main_inner .header_right .gnb_area .gnb .gnb_list .gnb_item .gnb_link {
                 position: relative;
-                display: flex;
                 font-size: 18px;
                 letter-spacing: -.27px; }
 
@@ -240,5 +239,25 @@ body {
       .main_container .main_top_area .main_banner .img_banner {
         width: 100%;
         height: 100%; }
+
+.user_container {
+  margin-top: 50px; }
+  .user_container .user_item {
+    display: flex;
+    flex-direction: row;
+    justify-content: center; }
+    .user_container .user_item .user_link .user_content {
+      width: 150px;
+      height: 150px;
+      border-radius: 100%;
+      background-color: #202020;
+      margin-right: 50px;
+      border: 1px solid black; }
+      .user_container .user_item .user_link .user_content .user_img {
+        width: 100%;
+        height: 100%;
+        border-radius: 100%; }
+    .user_container .user_item .user_link:last-child {
+      margin-right: 0; }
 
 /*# sourceMappingURL=main.css.map */
