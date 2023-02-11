@@ -1,0 +1,62 @@
+.ably_container {
+  padding-top: 150px;
+  margin: 0 auto; }
+  .ably_container .ably_content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-bottom: 100px; }
+    .ably_container .ably_content .top_logo {
+      width: 160px;
+      height: auto;
+      margin-bottom: 40px; }
+      .ably_container .ably_content .top_logo .top_logo_img {
+        width: 100%;
+        height: 100%; }
+    .ably_container .ably_content .ably_infodata {
+      display: flex;
+      flex-direction: column; }
+      .ably_container .ably_content .ably_infodata .ablylabel {
+        margin-bottom: 10px; }
+        .ably_container .ably_content .ably_infodata .ablylabel .required-field {
+          margin-left: 2px;
+          color: #fa4d56; }
+      .ably_container .ably_content .ably_infodata .input_ably {
+        width: 300px;
+        height: 45px;
+        border: 1px solid #7d7d7d;
+        margin-bottom: 20px;
+        padding-left: 20px; }
+      .ably_container .ably_content .ably_infodata .caution {
+        font-size: 12px;
+        color: #7d7d7d;
+        position: relative;
+        top: -15px; }
+      .ably_container .ably_content .ably_infodata .submit_btn {
+        width: 320px;
+        height: 46px;
+        color: white;
+        font-size: 13px;
+        font-weight: bold;
+        background-color: #111111;
+        margin-top: 30px; }
+    .ably_container .ably_content .ably_title_id {
+      font-size: 16px;
+      font-weight: bold; }
+    .ably_container .ably_content .ably_id {
+      margin-top: 10px;
+      font-size: 15px;
+      border: 1px solid #111111;
+      width: 300px;
+      padding: 5px 0 5px 15px; }
+    .ably_container .ably_content .delete_btn {
+      display: block;
+      background: #111111;
+      color: #fff;
+      width: 100px;
+      text-align: center;
+      padding: 10px 0;
+      margin-top: 20px;
+      border-radius: 5px;
+      font-weight: 400; }
+
+/*# sourceMappingURL=ably.css.map */

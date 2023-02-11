@@ -59,10 +59,7 @@
                     <a class="gnb_link active" href="/">HOME</a>
                   </li>
                   <li class="gnb_item">
-                    <a class="gnb_link" href="/">DASHBORAD</a>
-                  </li>
-                  <li class="gnb_item">
-                    <a class="gnb_link" href="/">마이페이지</a>
+                    <a class="gnb_link" href="{% url 'app:dashboard' %}">DASHBOARD</a>
                   </li>
                   <li class="gnb_item">
                     <button class="gnb_link" onclick="location.href='/logout/'">로그아웃</button>
@@ -85,95 +82,94 @@
     </div>
   </header>
   {% endblock %}
-  {% block footer %}
-  <footer class="footer">
-    <div class="inner">
+</body>
+{% block footer %}
+<footer class="footer">
+  <div class="inner">
 
-      <div class="service_menu">
-        <div>
-          <a href="javascript:void(0)" class="service_title">문의센터</a>
-          <div class="sub_area">
-            <dl class="sub_text">
-              <dt class="sub_content"> 
-                운영시간 평일 11:00 - 18:00 (토∙일, 공휴일 휴무)<br />
-                점심시간 평일 13:00 - 14:00
-              </dt>
-            </dl>
-          </div>
-        </div>
-        <div class="footer_menu">
-          <div class="menu_box">
-            <strong class="menu_title">
-              이용안내
-            </strong>
-            <ul class="menu_list">
-              <li class="menu_item">
-                <a class="menu_link" href="javascript:void(0)">이용정책</a>
-              </li>
-              <li class="menu_item">
-                <a class="menu_link" href="javascript:void(0)">커뮤니티 가이드라인</a>
-              </li>
-              <li class="menu_item">
-                <a class="menu_link" href="javascript:void(0)">이용방법</a>
-              </li>
-            </ul>
-          </div>
-          <div class="menu_box_se">
-            <strong class="menu_title">
-              고객지원
-            </strong>
-            <ul class="menu_list">
-              <li class="menu_item">
-                <a class="menu_link" href="javascript:void(0)">공지사항</a>
-              </li>
-              <li class="menu_item">
-                <a class="menu_link" href="javascript:void(0)">서비스 소개</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div class="corporation_area">
-        <ul class="cor_list">
-          <li class="cor_item">
-            <a href="javascript:void(0)">회사소개</a>
-          </li>
-          <li class="cor_item">
-            <a href="javascript:void(0)">기술제안</a>
-          </li>
-          <li class="cor_item">
-            <a href="javascript:void(0)">이용약관</a>
-          </li>
-          <li class="cor_item_pra">
-            <a class="active" href="javascript:void(0)">개인정보처리방침</a>
-          </li>
-        </ul>
-      </div>
-      <div class="business_info">
-        <div class="info_list">
-          <dl class="info_item">
-            <dt class="business_title">
-              (주) Donone 대표 배혜빈
-              <span class="blank"></span>
-              사업자등록번호 000-00-00000
-              <span class="blank"></span>
-              TEL : 010-0000-0000 <br />
-              총괄 책임자 : 장선영
-              <span class="blank"></span>
-              기술 책임자 : 박건후
-              <span class="blank"></span>
-              잡일 책임자 : 김성진
-              <br />
-              <br />
-              © 2023 Donone Company. All Rights Reserved.
+    <div class="service_menu">
+      <div>
+        <a href="javascript:void(0)" class="service_title">문의센터</a>
+        <div class="sub_area">
+          <dl class="sub_text">
+            <dt class="sub_content"> 
+              운영시간 평일 11:00 - 18:00 (토∙일, 공휴일 휴무)<br />
+              점심시간 평일 13:00 - 14:00
             </dt>
           </dl>
         </div>
       </div>
-
+      <div class="footer_menu">
+        <div class="menu_box">
+          <strong class="menu_title">
+            이용안내
+          </strong>
+          <ul class="menu_list">
+            <li class="menu_item">
+              <a class="menu_link" href="javascript:void(0)">이용정책</a>
+            </li>
+            <li class="menu_item">
+              <a class="menu_link" href="javascript:void(0)">커뮤니티 가이드라인</a>
+            </li>
+            <li class="menu_item">
+              <a class="menu_link" href="javascript:void(0)">이용방법</a>
+            </li>
+          </ul>
+        </div>
+        <div class="menu_box_se">
+          <strong class="menu_title">
+            고객지원
+          </strong>
+          <ul class="menu_list">
+            <li class="menu_item">
+              <a class="menu_link" href="javascript:void(0)">공지사항</a>
+            </li>
+            <li class="menu_item">
+              <a class="menu_link" href="javascript:void(0)">서비스 소개</a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
-  </footer>
-  {% endblock %}
-</body>
+
+    <div class="corporation_area">
+      <ul class="cor_list">
+        <li class="cor_item">
+          <a href="javascript:void(0)">회사소개</a>
+        </li>
+        <li class="cor_item">
+          <a href="javascript:void(0)">기술제안</a>
+        </li>
+        <li class="cor_item">
+          <a href="javascript:void(0)">이용약관</a>
+        </li>
+        <li class="cor_item_pra">
+          <a class="active" href="javascript:void(0)">개인정보처리방침</a>
+        </li>
+      </ul>
+    </div>
+    <div class="business_info">
+      <div class="info_list">
+        <dl class="info_item">
+          <dt class="business_title">
+            (주) Donone 대표 배혜빈
+            <span class="blank"></span>
+            사업자등록번호 000-00-00000
+            <span class="blank"></span>
+            TEL : 010-0000-0000 <br />
+            총괄 책임자 : 장선영
+            <span class="blank"></span>
+            기술 책임자 : 박건후
+            <span class="blank"></span>
+            잡일 책임자 : 김성진
+            <br />
+            <br />
+            © 2023 Donone Company. All Rights Reserved.
+          </dt>
+        </dl>
+      </div>
+    </div>
+  </div>
+</footer>
+{% endblock %}
 </html>

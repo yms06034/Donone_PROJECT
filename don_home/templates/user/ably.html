@@ -1,20 +1,56 @@
-{% if ably_list %}
-    {% for ably in ably_list %}
-    <p>{{ ably.ably_id }}</p>
-    {% endfor %}
-    <button>데이터 가져오기</button>
-{% else %}
-<form method="POST" action="{% url 'app:ably'%}">
-    {% csrf_token %}
-    <label for="ablyid">에이블리 아이디</label>
-    <input required id="ablyid" name="ablyid" type="text">
-    <br>
-    <br>
-    <label for="ablypw">에이블리 비밀번호</label>
-    <input required id="ablypw" name="ablypw" type="text">
-    <p>
-        <input type="submit" id="ably-submit" value="확인">
-    </p>
-    <button>데이터 가져오기</button>
-</form>
-{% endif %}
+{% extends "layout.html" %}
+
+{% block title %}
+Main
+{% endblock %}
+
+{% block head %}
+  {{ block.super }}
+  {% load sass_tags %}
+  <link href="{% sass_src 'css/ably.scss' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block body %}
+<!-- header -->
+  {{ block.super }}
+<div class="ably_container">
+  <div class="ably_content">
+    <div class="top_logo">
+      <img
+        class="top_logo_img" 
+        src="../../static/img/ably logo.png" alt="ablylogo">
+    </div>
+    <div>
+    {% if ably_dataIn %}
+      {% for ably in ably_dataIn %}
+      <p class="ably_title_id">에이블리 어드민 ID</p>
+      <p class="ably_id">{{ ably.ably_id }}</p>
+      {% endfor %}
+      <a class="delete_btn" href="{% url 'app:ably_delete' %}" class="">삭제</a>
+    </div>
+    {% else %}
+    <form method="POST" action="{% url 'app:ably'%}">
+      <div class="ably_infodata">
+        {% csrf_token %}
+        <label class="ablylabel" for="ablyid">에이블리 아이디
+          <span class="required-field">*</span>
+        </label>
+        <input autocomplete="off" class="input_ably" required id="ablyid" name="ablyid" type="text">
+        <label class="ablylabel" for="ablypw">에이블리 비밀번호
+          <span class="required-field">*</span>
+        </label>
+        <input autocomplete="off" type="password" class="input_ably" required id="ablypw" name="ablypw" type="text">
+        <p class="caution">제대로 입력을 안해주세면 데이터를 가져올 수 없으니 주의하시기 바랍니다.</p>
+        <input class="submit_btn" type="submit" id="ably-submit" value="확인">
+      </div>
+    </form>
+  </div>
+  {% endif %}
+  
+</div>
+
+{% endblock %}
+
+{% block footer %}
+  {{ block.super }}
+{% endblock %}

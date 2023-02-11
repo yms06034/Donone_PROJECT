@@ -1,32 +1,92 @@
-<form method="POST" action="{% url 'app:cafe24'%}">
-    {% csrf_token %}
-    <label for="cafe24id">cafe24_id</label>
-    <input required id="cafe24id" name="cafe24id" type="text">
-    <br>
-    <br>
-    <label for="cafe24pw">cafe24_pw</label>
-    <input required id="cafe24pw" name="cafe24pw" type="text">
-    <br>
-    <br>
-    <label for="cafe24_clientid">cafe24_clientid</label>
-    <input required id="cafe24_clientid" name="cafe24_clientid" type="text">
-    <br>
-    <br>
-    <label for="cafe24_client_secret">cafe24_client_secret</label>
-    <input required id="cafe24_client_secret" name="cafe24_client_secret" type="text">
-    <br>
-    <br>
-    <label for="cafe24_mallid">cafe24_mallid</label>
-    <input required id="cafe24_mallid" name="cafe24_mallid" type="text">
-    <br>
-    <br>
-    <label for="cafe24_encode_csrf_token">cafe24_encode_csrf_token</label>
-    <input required id="cafe24_encode_csrf_token" name="cafe24_encode_csrf_token" type="text">
-    <br>
-    <br>
-    <label for="cafe24_redirect_uri">cafe24_redirect_uri</label>
-    <input required id="cafe24_redirect_uri" name="cafe24_redirect_uri" type="text">
-    <p>
-        <input type="submit" id="ably-submit" value="확인">
-    </p>
-</form>
+{% extends "layout.html" %}
+
+{% block title %}
+Main
+{% endblock %}
+
+{% block head %}
+  {{ block.super }}
+  {% load sass_tags %}
+  <link href="{% sass_src 'css/ably.scss' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block body %}
+<!-- header -->
+  {{ block.super }}
+<div class="ably_container">
+  <div class="ably_content">
+    <div class="top_logo">
+      <img
+        class="top_logo_img" 
+        src="../../static/img/cafe24 logo.png" alt="cafe24logo">
+    </div>
+    <div>
+    {% if cafe24_info %}
+      {% for cafe24 in cafe24_info %}
+      <p class="ably_title_id">Cafe24 ID</p>
+      <p class="ably_id">{{ cafe24.cafe24_id }}</p>
+      <br />
+      <p class="ably_title_id">Cafe24 Client Secret</p>
+      <p class="ably_id">{{ cafe24.cafe24_client_secret }}</p>
+      <br />
+      <p class="ably_title_id">Cafe24 Client ID</p>
+      <p class="ably_id">{{ cafe24.cafe24_clientid }}</p>
+      <br />
+      <p class="ably_title_id">Cafe24 Encode Csrf Token</p>
+      <p class="ably_id">{{ cafe24.cafe24_encode_csrf_token }}</p>
+      <br />
+      <p class="ably_title_id">Cafe24 Mall ID</p>
+      <p class="ably_id">{{ cafe24.cafe24_mallid }}</p>
+      <br />
+      <p class="ably_title_id">Cafe24 Redirect Uri</p>
+      <p class="ably_id">{{ cafe24.cafe24_redirect_uri }}</p>
+      {% endfor %}
+      <a class="delete_btn" href="{% url 'app:cafe24_delete' %}" class="">삭제</a>
+    </div>
+    {% else %}
+    <form method="POST" action="{% url 'app:cafe24'%}">
+      <div class="ably_infodata">
+        {% csrf_token %}
+        <label class="ablylabel" for="cafe24id">cafe24_id
+          <span class="required-field">*</span>
+        </label>
+        <input autocomplete="off" class="input_ably" required id="cafe24id" name="cafe24id" type="text">
+        <label class="ablylabel" for="cafe24pw">cafe24_pw
+          <span class="required-field">*</span>
+        </label>
+        <input autocomplete="off" class="input_ably" required id="cafe24pw" name="cafe24pw" type="text">
+        <label class="ablylabel" for="cafe24_clientid">cafe24_clientid
+          <span class="required-field">*</span>
+        </label>
+        <input autocomplete="off" class="input_ably" required id="cafe24_clientid" name="cafe24_clientid" type="text">
+        <label class="ablylabel" for="cafe24_client_secret">cafe24_client_secret
+          <span class="required-field">*</span>
+        </label>
+        <input autocomplete="off" class="input_ably" required id="cafe24_client_secret" name="cafe24_client_secret" type="text">
+        <label class="ablylabel" for="cafe24_mallid">cafe24_mallid
+          <span class="required-field">*</span>
+        </label>
+        <input autocomplete="off" class="input_ably" required id="cafe24_mallid" name="cafe24_mallid" type="text">
+        <label class="ablylabel" for="cafe24_encode_csrf_token">cafe24_encode_csrf_token
+          <span class="required-field">*</span>
+        </label>
+        <input autocomplete="off" class="input_ably" autocomplete="off" class="input_ably" required id="cafe24_encode_csrf_token" name="cafe24_encode_csrf_token" type="text">
+        <label class="ablylabel" for="cafe24_redirect_uri">cafe24_redirect_uri
+          <span class="required-field">*</span>
+        </label>
+        <input autocomplete="off" class="input_ably" required id="cafe24_redirect_uri" name="cafe24_redirect_uri" type="text">
+        <input class="submit_btn" type="submit" id="ably-submit" value="확인">
+      </div>
+    </form>
+  </div>
+  {% endif %}
+  
+</div>
+
+{% endblock %}
+
+{% block footer %}
+  {{ block.super }}
+{% endblock %}
+
+

@@ -12,13 +12,13 @@
 
 {% block body %}
   {{ block.super }}
-  <form action="{% url 'app:login' %}" method="POST">
+  <!-- <form action="{% url 'app:login' %}" method="POST">
     {% csrf_token %}
     <input required type="input" name="username" id="username" placeholder="id">
     <input required type="password" name="password" placeholder="password">
     <input type="submit" value="Login">
     {{ error }}
-  </form>
+  </form> -->
 
 
   <div class="signup_area">
@@ -41,8 +41,8 @@
             </label>
             <input class="id_forminput_tn" required type="password" name="password" placeholder="password">
           </div>
-  
           <input class="submit_signup" type="submit" value="로그인">
+          {{ error }}
         </form>
       </div>
     </div>

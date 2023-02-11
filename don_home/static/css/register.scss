@@ -20,7 +20,7 @@
       }
     }
     .signup_form {
-      max-width: 330px;
+      width: 330px;
       padding: 50px 40px;
       background-color: #fff;
       border-radius: 5px;
@@ -48,7 +48,7 @@
         .id_forminput_tn {
           height: 30px;
           min-height: 30px;
-          width: 90%;
+          width: 92%;
           border: 1px solid rgb(207, 213, 219);
           padding: 6px 12px;
           &::placeholder {

@@ -1,0 +1,696 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+{% block head %}
+  {{ block.super }}
+  {% load sass_tags %}
+  <link href="{% sass_src 'css/dashboard.scss' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block body %}
+<!-- header -->
+  {{ block.super }}
+
+<!-- 사용자가 로그인 이후 보여지는 페이지 -->
+<!-- {% if user.is_authenticated %} -->
+<div class="dash_container">
+  <div class="dash_item">
+
+    <div class="first_content">
+      <div class="category_area">
+        <div class="logo_title">
+          <div class="top_flex">
+            <img class="h-log_logo" src="data:image/jpeg;base64,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" alt="h-log logo">
+            <span class="first_title">플랫폼 별 판매 현황</span>
+          </div>
+          <p class="dash">__________________</p>
+        </div>
+        <div class="days_total_area">
+          <span>전체 매출 </span>
+          <span id="month"></span>
+          <span id="year"></span>
+        </div>
+        <div class="total_sales_area">
+          <span class="ts_item">￦ </span>
+          <span id="ts_money" class="ts_money"> {{ total }}</span>
+        </div>
+        <div class="platform_area">
+          <div class="platform_btn">
+            <button id="total_btn" class="bbtn activate">
+              <span class="platform_name">전체</span>
+              <span class="platform_name">￦ {{ total }}</span>
+            </button>
+          </div>
+          <div class="platform_btn">
+            <button id="ably_btn" class="bbtn">
+              <span class="platform_name">에이블리</span>
+              <span class="platform_name">￦ {{ ably_plat }}</span>
+            </button>
+          </div>
+          <div class="platform_btn">
+            <button id="cafe24_btn" class="bbtn">
+              <span class="platform_name">카페24</span>
+              <span class="platform_name">￦ {{ cafe_plat }}</span>
+            </button>
+          </div>
+          <div class="platform_btn">
+            <button id="naver_btn" class="bbtn">
+              <span class="platform_name">스마트스토어</span>
+              <span class="platform_name">￦ {{ naver_plat }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="second_content">
+      <div class="top_title">
+        <span>TOTAL OVERVIEW</span>
+        <div class="top_date">
+          <span class="now_date"></span>
+          <form action="" method="get" id="form">
+            <select class="select_box" name="order_date" id="select_box">
+              <option value="">조회 선택</option>
+              <option value="odyear">1년</option>
+              <option value="odquarter">3개월</option>
+              <option value="odmonth">저번달</option>
+              <option value="odweek">저번주</option>
+              <option value="oddays">어제</option>
+            </select>
+          </form>
+        </div>
+      </div>
+
+
+      <div id="total_dash" class="da_to_content">
+        <div class="dash_area">
+          <div class="dash_total_sales">
+            <div class="dash_total_item">
+              <span>총 매출</span>
+              <img class="img" src="https://i.ibb.co/D1xqpg1/totalsales.png" alt="">
+            </div>
+            <div class="dash_total_content">
+              <span class="dahs_tosales_w">￦</span>
+              <span class="dahs_tosales">{{ total }}</span>
+            </div>
+          </div>
+          <div class="dash_total_sales">
+            <div class="dash_total_item">
+              <span>총 주문 건수</span>
+              <img class="img" src="https://i.ibb.co/N7srhyL/box.png" alt="">
+            </div>
+            <div class="dash_total_content">
+              <span class="dahs_tosales">{{ total_order }}</span>
+            </div>
+          </div>
+          <div class="dash_total_sales">
+            <div class="dash_total_item">
+              <span>총 반품 건수</span>
+              <img class="img" src="https://i.ibb.co/kH5TBFZ/box2.png" alt="">
+            </div>
+            <div class="dash_total_content">
+              <span class="dahs_tosales">{{ total_re }}</span>
+            </div>
+          </div>
+        </div>
+        <!-- Chaert -->
+        <div class="chart_area">
+          <div class="chart_item">
+            <div class="chart_content">
+              <span class="barchart_title">일별 매출</span>
+              <canvas id="to_barChart"></canvas>
+            </div>
+          </div>
+          <div class="chart_item_snd">
+            <div class="piechart_content">
+              <span class="piechart_title">제품 판매 현황</span>
+              <canvas id="to_pieChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Details -->
+        <div class="order_area">
+          <div class="order_content">
+            <span class="order_title">주문 상세 내역</span>
+            <div class="order_table_area">
+              <div class="order_table_head">
+                <span>플랫폼</span>
+                <span style="margin-left: 60px;">주문번호</span>
+                <span style="margin-left: 65px;">주문상태</span>
+                <span style="margin-left: 70px;">주문일자</span>
+                <span style="margin-left: 75px;">주문자</span>
+                <span style="margin-left: 85px;">상품명</span>
+                <span style="margin-left: 195px;">수량</span>
+                <span style="margin-left: 25px;">매출</span>
+                <span style="margin-left: 25px;">Profit</span>
+              </div>
+              <div class="table_body">
+                <table style="text-align: left; font-size: 13px;">
+                  <colgroup>
+                    <col style="width: 8%">
+                    <col style="width: 11%">
+                    <col style="width: 11%"> 
+                    <col style="width: 11%">
+                    <col style="width: 11%">
+                    <col style="width: 20%">
+                    <col style="width: 5%">
+                    <col style="width: 5%">
+                    <col style="width: 5%">
+                  </colgroup>
+                  <tbody>
+                    {% for t in td %}
+                    <tr>
+                      <td>{{ t.Platform }}</td>
+                      <td>{{ t.주문번호 }}</td>
+                      <td>{{ t.Status }}</td>
+                      <td>{{ t.주문일자 }}</td>
+                      <td style="text-align: center !important;">{{ t.고객명 }}</td>
+                      <td>{{ t.상품명 }}</td>
+                      <td>{{ t.수량 }}</td>
+                      <td>{{ t.판매가 }}</td>
+                      <td>{{ t.Profit }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div id="ably_dash" class="da_to_content display_none">
+        <div class="dash_area">
+          <div class="dash_total_sales">
+            <div class="dash_total_item">
+              <span>총 매출</span>
+              <img class="img" src="https://i.ibb.co/D1xqpg1/totalsales.png" alt="">
+            </div>
+            <div class="dash_total_content">
+              <span class="dahs_tosales">￦ {{ ably_plat }}</span>
+            </div>
+          </div>
+          <div class="dash_total_sales">
+            <div class="dash_total_item">
+              <span>총 주문 건수</span>
+              <img class="img" src="https://i.ibb.co/N7srhyL/box.png" alt="">
+            </div>
+            <div class="dash_total_content">
+              <span class="dahs_tosales">{{ ably_order }}</span>
+            </div>
+          </div>
+          <div class="dash_total_sales">
+            <div class="dash_total_item">
+              <span>총 반품 건수</span>
+              <img class="img" src="https://i.ibb.co/kH5TBFZ/box2.png" alt="">
+            </div>
+            <div class="dash_total_content">
+              <span class="dahs_tosales">{{ ably_re }}</span>
+            </div>
+          </div>
+        </div>
+        <!-- Chaert -->
+        <!-- Chaert -->
+        <div class="chart_area">
+          <div class="chart_item">
+            <div class="chart_content">
+              <span class="barchart_title">일별 매출</span>
+              <canvas id="to_barChart"></canvas>
+            </div>
+          </div>
+          <div class="chart_item_snd">
+            <div class="piechart_content">
+              <span class="piechart_title">제품 판매 현황</span>
+              <canvas id="to_pieChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Details -->
+        <div class="order_area">
+          <div class="order_content">
+            <span class="order_title">주문 상세 내역</span>
+            <div class="order_table_area">
+              <div class="order_table_head">
+                <span>플랫폼</span>
+                <span style="margin-left: 60px;">주문번호</span>
+                <span style="margin-left: 65px;">주문상태</span>
+                <span style="margin-left: 70px;">주문일자</span>
+                <span style="margin-left: 75px;">주문자</span>
+                <span style="margin-left: 85px;">상품명</span>
+                <span style="margin-left: 195px;">수량</span>
+                <span style="margin-left: 25px;">매출</span>
+                <span style="margin-left: 25px;">Profit</span>
+              </div>
+              <div class="table_body">
+                <table style="text-align: left; font-size: 13px;">
+                  <colgroup>
+                    <col style="width: 8%">
+                    <col style="width: 11%">
+                    <col style="width: 11%"> 
+                    <col style="width: 11%">
+                    <col style="width: 11%">
+                    <col style="width: 20%">
+                    <col style="width: 5%">
+                    <col style="width: 5%">
+                    <col style="width: 5%">
+                  </colgroup>
+                  <tbody>
+                    {% for a in ab %}
+                    <tr>
+                      <td>{{ a.Platform }}</td>
+                      <td>{{ a.주문번호 }}</td>
+                      <td>{{ a.Status }}</td>
+                      <td>{{ a.주문일자 }}</td>
+                      <td style="text-align: center !important;">{{ a.고객명 }}</td>
+                      <td>{{ a.상품명 }}</td>
+                      <td>{{ a.수량 }}</td>
+                      <td>{{ a.판매가 }}</td>
+                      <td>{{ a.Profit }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div id="cafe24_dash" class="da_to_content display_none">
+        <div class="dash_area">
+          <div class="dash_total_sales">
+            <div class="dash_total_item">
+              <span>총 매출</span>
+              <img class="img" src="https://i.ibb.co/D1xqpg1/totalsales.png" alt="">
+            </div>
+            <div class="dash_total_content">
+              <span class="dahs_tosales">￦ {{ cafe_plat }}</span>
+            </div>
+          </div>
+          <div class="dash_total_sales">
+            <div class="dash_total_item">
+              <span>총 주문 건수</span>
+              <img class="img" src="https://i.ibb.co/N7srhyL/box.png" alt="">
+            </div>
+            <div class="dash_total_content">
+              <span class="dahs_tosales">{{ cafe_order }}</span>
+            </div>
+          </div>
+          <div class="dash_total_sales">
+            <div class="dash_total_item">
+              <span>총 반품 건수</span>
+              <img class="img" src="https://i.ibb.co/kH5TBFZ/box2.png" alt="">
+            </div>
+            <div class="dash_total_content">
+              <span class="dahs_tosales">{{ cafe_re }}</span>
+            </div>
+          </div>
+        </div>
+        <!-- Chaert -->
+        <!-- Chaert -->
+        <div class="chart_area">
+          <div class="chart_item">
+            <div class="chart_content">
+              <span class="barchart_title">일별 매출</span>
+              <canvas id="to_barChart"></canvas>
+            </div>
+          </div>
+          <div class="chart_item_snd">
+            <div class="piechart_content">
+              <span class="piechart_title">제품 판매 현황</span>
+              <canvas id="to_pieChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Details -->
+        <div class="order_area">
+          <div class="order_content">
+            <span class="order_title">주문 상세 내역</span>
+            <div class="order_table_area">
+              <div class="order_table_head">
+                <span>플랫폼</span>
+                <span style="margin-left: 60px;">주문번호</span>
+                <span style="margin-left: 65px;">주문상태</span>
+                <span style="margin-left: 70px;">주문일자</span>
+                <span style="margin-left: 75px;">주문자</span>
+                <span style="margin-left: 85px;">상품명</span>
+                <span style="margin-left: 195px;">수량</span>
+                <span style="margin-left: 25px;">매출</span>
+                <span style="margin-left: 25px;">Profit</span>
+              </div>
+              <div class="table_body">
+                <table style="text-align: left; font-size: 13px;">
+                  <colgroup>
+                    <col style="width: 8%">
+                    <col style="width: 11%">
+                    <col style="width: 11%"> 
+                    <col style="width: 11%">
+                    <col style="width: 11%">
+                    <col style="width: 20%">
+                    <col style="width: 5%">
+                    <col style="width: 5%">
+                    <col style="width: 5%">
+                  </colgroup>
+                  <tbody>
+                    {% for c in cf %}
+                    <tr>
+                      <td>{{ c.Platform }}</td>
+                      <td>{{ c.주문번호 }}</td>
+                      <td>{{ c.Status }}</td>
+                      <td>{{ c.주문일자 }}</td>
+                      <td style="text-align: center !important;">{{ c.고객명 }}</td>
+                      <td>{{ c.상품명 }}</td>
+                      <td>{{ c.수량 }}</td>
+                      <td>{{ c.판매가 }}</td>
+                      <td>{{ c.Profit }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div id="naver_dash" class="da_to_content display_none">
+        <div class="dash_area">
+          <div class="dash_total_sales">
+            <div class="dash_total_item">
+              <span>총 매출</span>
+              <img class="img" src="https://i.ibb.co/D1xqpg1/totalsales.png" alt="">
+            </div>
+            <div class="dash_total_content">
+              <span class="dahs_tosales">￦ {{ naver_plat }}</span>
+            </div>
+          </div>
+          <div class="dash_total_sales">
+            <div class="dash_total_item">
+              <span>총 주문 건수</span>
+              <img class="img" src="https://i.ibb.co/N7srhyL/box.png" alt="">
+            </div>
+            <div class="dash_total_content">
+              <span class="dahs_tosales">{{ naver_order }}</span>
+            </div>
+          </div>
+          <div class="dash_total_sales">
+            <div class="dash_total_item">
+              <span>총 반품 건수</span>
+              <img class="img" src="https://i.ibb.co/kH5TBFZ/box2.png" alt="">
+            </div>
+            <div class="dash_total_content">
+              <span class="dahs_tosales">{{ naver_re }}</span>
+            </div>
+          </div>
+        </div>
+        <!-- Chaert -->
+        <!-- Chaert -->
+        <div class="chart_area">
+          <div class="chart_item">
+            <div class="chart_content">
+              <span class="barchart_title">일별 매출</span>
+              <canvas id="to_barChart"></canvas>
+            </div>
+          </div>
+          <div class="chart_item_snd">
+            <div class="piechart_content">
+              <span class="piechart_title">제품 판매 현황</span>
+              <canvas id="to_pieChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Details -->
+        <div class="order_area">
+          <div class="order_content">
+            <span class="order_title">주문 상세 내역</span>
+            <div class="order_table_area">
+              <div class="order_table_head">
+                <span>플랫폼</span>
+                <span style="margin-left: 60px;">주문번호</span>
+                <span style="margin-left: 65px;">주문상태</span>
+                <span style="margin-left: 70px;">주문일자</span>
+                <span style="margin-left: 75px;">주문자</span>
+                <span style="margin-left: 85px;">상품명</span>
+                <span style="margin-left: 195px;">수량</span>
+                <span style="margin-left: 25px;">매출</span>
+                <span style="margin-left: 25px;">Profit</span>
+              </div>
+              <div class="table_body">
+                <table style="text-align: left; font-size: 13px;">
+                  <colgroup>
+                    <col style="width: 8%">
+                    <col style="width: 11%">
+                    <col style="width: 11%"> 
+                    <col style="width: 11%">
+                    <col style="width: 11%">
+                    <col style="width: 20%">
+                    <col style="width: 5%">
+                    <col style="width: 5%">
+                    <col style="width: 5%">
+                  </colgroup>
+                  <tbody>
+                    {% for n in na %}
+                    <tr>
+                      <td>{{ n.Platform }}</td>
+                      <td>{{ n.주문번호 }}</td>
+                      <td>{{ n.Status }}</td>
+                      <td>{{ n.주문일자 }}</td>
+                      <td style="text-align: center !important;">{{ n.고객명 }}</td>
+                      <td>{{ n.상품명 }}</td>
+                      <td>{{ n.수량 }}</td>
+                      <td>{{ n.판매가 }}</td>
+                      <td>{{ n.Profit }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ably_btn = document.getElementById('ably_btn');
+  const cafe24_btn = document.getElementById('cafe24_btn');
+  const naver_btn = document.getElementById('naver_btn');
+  const total_btn = document.getElementById('total_btn');
+
+  const ably_dash = document.getElementById('ably_dash');
+  const cafe24_dash = document.getElementById('cafe24_dash');
+  const naver_dash = document.getElementById('naver_dash');
+  const total_dash = document.getElementById('total_dash');
+
+  const now_date = document.getElementsByClassName('now_date')
+
+  let month = document.getElementById("month");
+  let year = document.getElementById("year");
+
+  $(ably_btn).click(function() {
+    $(ably_btn).addClass('activate');
+    $(cafe24_btn).removeClass('activate');
+    $(naver_btn).removeClass('activate');
+    $(total_btn).removeClass('activate');
+
+    $(ably_dash).removeClass('display_none');
+    $(cafe24_dash).addClass('display_none');
+    $(naver_dash).addClass('display_none');
+    $(total_dash).addClass('display_none');
+  });
+
+  $(cafe24_btn).click(function() {
+    $(cafe24_btn).addClass('activate');
+    $(ably_btn).removeClass('activate');
+    $(naver_btn).removeClass('activate');
+    $(total_btn).removeClass('activate');
+
+    $(ably_dash).addClass('display_none');
+    $(cafe24_dash).removeClass('display_none');
+    $(naver_dash).addClass('display_none');
+    $(total_dash).addClass('display_none');
+  });
+
+  $(naver_btn).click(function() {
+    $(naver_btn).addClass('activate');
+    $(ably_btn).removeClass('activate');
+    $(cafe24_btn).removeClass('activate');
+    $(total_btn).removeClass('activate');
+
+    $(ably_dash).addClass('display_none');
+    $(cafe24_dash).addClass('display_none');
+    $(naver_dash).removeClass('display_none');
+    $(total_dash).addClass('display_none');
+  });
+
+  $(total_btn).click(function() {
+    $(total_btn).addClass('activate');
+    $(ably_btn).removeClass('activate');
+    $(cafe24_btn).removeClass('activate');
+    $(naver_btn).removeClass('activate');
+
+    $(ably_dash).addClass('display_none');
+    $(cafe24_dash).addClass('display_none');
+    $(naver_dash).addClass('display_none');
+    $(total_dash).removeClass('display_none');
+  });
+
+  function dayinfo() {
+    const dateObj = new Date();
+    const yearInfo = dateObj.getFullYear();
+    const monthNameLong = dateObj.toLocaleString("en-US", { month: "long" });
+
+    month.innerText = `(${monthNameLong}`;
+    year.innerText = `${yearInfo})`;
+  }
+  dayinfo();
+
+  $(document).ready(function() {
+        $( "select[name=order_date]" ).val( "{{ order_date_text }}" );
+        $('select[name=order_date]').change(function () {
+        $(now_date).innerText = $('select[name=order_date]').val();
+        month = $('select[name=order_date]').val();
+        $('#form').submit();
+      });
+  });
+
+// Chart
+const toctx = document.getElementById('to_barChart');
+const abctx = document.getElementById('ab_barChart');
+const cfctx = document.getElementById('cf_barChart');
+const nactx = document.getElementById('na_barChart');
+
+const p_toctx = document.getElementById('to_pieChart')
+
+let to_mon_data = {{ to_mon|safe }};
+let to_o_data = {{ to_data|safe }};
+console.log('to_mon_data:', to_mon_data);
+
+
+new Chart(toctx, {
+  type: 'bar',
+  data: {
+    labels: to_mon_data,
+    datasets: [{
+      label: '# of Votes',
+      data: to_o_data,
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
+new Chart(p_toctx, {
+  type: 'pie',
+  data :{
+    labels: ['Red','Blue','Yellow'],
+  datasets: [{
+    label: 'My First Dataset',
+    data: [300, 50, 100],
+    backgroundColor: [
+      'rgb(255, 99, 132)',
+      'rgb(54, 162, 235)',
+      'rgb(255, 205, 86)'
+    ],
+    hoverOffset: 4
+  }],
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+}});
+
+new Chart(abctx, {
+  type: 'bar',
+  data: {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [{
+      label: '# of Votes',
+      data: [12, 19, 3, 5, 2, 3],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
+
+new Chart(cfctx, {
+  type: 'bar',
+  data: {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [{
+      label: '# of Votes',
+      data: [12, 19, 3, 5, 2, 3],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
+
+new Chart(nactx, {
+  type: 'bar',
+  data: {
+    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    datasets: [{
+      label: '# of Votes',
+      data: [12, 19, 3, 5, 2, 3],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
+
+
+</script>
+
+
+<!-- 로그인 하기 전에 보여지는 페이지 -->
+<!-- {% else %}
+<p>로그인 이후 사용이 가능합니다.</p>
+{% endif %} -->
+
+
+{% endblock %}
+{% block footer %}
+  {{ block.super }}
+{% endblock %}

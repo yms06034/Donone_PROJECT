@@ -12,7 +12,16 @@ Main
 <!-- header -->
   {{ block.super }}
 
-<div class="main_container">
+<div class="place_search">
+  <div class="place_search_title">
+    <span class="head_addtitle">한눈에 보는 나의 쇼핑몰정보</span>
+    <div class="p_s_row">
+      <h2 class="p_s_title"> <span class="p_s_title_sub"></span></h2>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="main_container">
   <div class="main_top_area">
     <div class="main_banner">
       <div class="swiper mySwiper">
@@ -49,10 +58,16 @@ Main
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 <!-- 사용자가 로그인 이후 보여지는 페이지 -->
 {% if user.is_authenticated %}
+<div class="user_info_title">
+  <div>
+    <p>나의 쇼핑몰정보 입력</p>
+  </div>
+</div>
+
 <div class="user_container">
   <div class="user_item">
     <a class="user_link" href="{% url 'app:ably' %}">
@@ -62,18 +77,15 @@ Main
     </a>
     <a class="user_link" href="{% url 'app:cafe24' %}">
       <div class="user_content">
-        <img class="user_img" src="https://m-img.cafe24.com/images/bi/cafe24/cafe24.gif" alt="" />
+        <img class="user_img" src="../static/img/caf24.png" alt="" />
       </div>
     </a>
-    <a class="user_link" href="{% url 'app:cafe24' %}">
+    <a class="user_link" href="javascripts:void(0)">
       <div class="user_content">
-        <img class="user_img" src="https://www.navercorp.com/img/ko/og/logo.png" alt="" />
+        <img class="user_img" src="../static/img/naver S.png" alt="" />
       </div>
     </a>
-
-  
-
-  <!-- <p><a href="{% url 'app:usertoken' %}">입력 정보 보러가기</a></p> -->
+  </div>
 </div>
 
 <!-- 로그인 하기 전에 보여지는 페이지 -->
@@ -90,6 +102,49 @@ Main
       el: ".swiper-pagination",
     },
   });
+
+
+  let typeText = document.querySelector(".p_s_title_sub")
+  let textToBeTypedArr = ["에이블리", "스마트스토어", "카페24"]
+  let index = 0, isAdding = true, textToBeTypedIndex = 0
+
+  function playAnim() {
+    setTimeout(function () {
+      // set the text of typeText to a substring of the text to be typed using index.
+      typeText.innerText = textToBeTypedArr[textToBeTypedIndex].slice(0, index)
+      if (isAdding) {
+        // adding text
+        if (index > textToBeTypedArr[textToBeTypedIndex].length) {
+          // no more text to add
+          isAdding = false
+          //break: wait 2s before playing again
+          setTimeout(function () {
+            playAnim()
+          }, 2000)
+          return
+        } else {
+          // increment index by 1
+          index++
+        }
+      } else {
+        // removing text
+        if (index === 0) {
+          // no more text to remove
+          isAdding = true
+          //switch to next text in text array
+          textToBeTypedIndex = (textToBeTypedIndex + 1) % textToBeTypedArr.length
+        } else {
+          // decrement index by 1
+          index--
+        }
+      }
+      // call itself
+      playAnim()
+    }, isAdding ? 120 : 60)
+  }
+  // start animation
+  playAnim()
+
 </script>
 
 {% endblock %}

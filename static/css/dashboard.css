@@ -1,0 +1,177 @@
+.activate {
+  background-color: #fff !important;
+  color: #494949 !important; }
+
+.display_none {
+  display: none; }
+
+.dash_container {
+  padding-top: 180px;
+  padding-bottom: 150px;
+  display: flex;
+  justify-content: center; }
+  .dash_container .dash_item {
+    display: flex; }
+    .dash_container .dash_item .first_content {
+      display: flex;
+      flex-direction: column; }
+      .dash_container .dash_item .first_content .category_area {
+        width: 300px;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        border-radius: 25px;
+        padding: 20px;
+        text-align: center;
+        display: flex;
+        flex-direction: column; }
+        .dash_container .dash_item .first_content .category_area .logo_title {
+          margin-top: 30px; }
+          .dash_container .dash_item .first_content .category_area .logo_title .top_flex {
+            display: flex;
+            align-items: center; }
+            .dash_container .dash_item .first_content .category_area .logo_title .top_flex .h-log_logo {
+              height: 35px;
+              width: auto; }
+            .dash_container .dash_item .first_content .category_area .logo_title .top_flex .first_title {
+              font-size: 19px;
+              margin-left: 25px;
+              font-weight: bold; }
+          .dash_container .dash_item .first_content .category_area .logo_title .dash {
+            font-size: 20px; }
+        .dash_container .dash_item .first_content .category_area .days_total_area {
+          margin-top: 30px; }
+        .dash_container .dash_item .first_content .category_area .total_sales_area {
+          margin-top: 30px; }
+          .dash_container .dash_item .first_content .category_area .total_sales_area .ts_item {
+            font-size: 20px; }
+          .dash_container .dash_item .first_content .category_area .total_sales_area .ts_money {
+            font-size: 24px;
+            font-weight: bold; }
+        .dash_container .dash_item .first_content .category_area .platform_area {
+          margin-top: 30px; }
+          .dash_container .dash_item .first_content .category_area .platform_area .platform_btn {
+            display: flex;
+            justify-content: center; }
+            .dash_container .dash_item .first_content .category_area .platform_area .platform_btn .bbtn {
+              width: 80%;
+              padding: 20px;
+              background-color: #494949;
+              margin-bottom: 20px;
+              border-radius: 25px;
+              display: flex;
+              justify-content: space-between;
+              color: #fff; }
+              .dash_container .dash_item .first_content .category_area .platform_area .platform_btn .bbtn .platform_name {
+                font-size: 14px;
+                font-weight: bold; }
+    .dash_container .dash_item .second_content {
+      display: flex;
+      flex-direction: column; }
+      .dash_container .dash_item .second_content .top_title {
+        display: flex;
+        justify-content: space-between;
+        font-size: 29px;
+        line-height: 34px;
+        color: #555555;
+        font-weight: bold;
+        font-style: normal;
+        text-decoration: none;
+        margin-bottom: 20px;
+        margin-left: 20px; }
+        .dash_container .dash_item .second_content .top_title .top_date {
+          display: flex; }
+          .dash_container .dash_item .second_content .top_title .top_date .now_date {
+            font-size: 15px;
+            color: #494949;
+            font-weight: 500;
+            margin-right: 15px; }
+          .dash_container .dash_item .second_content .top_title .top_date .select_box {
+            width: 150px;
+            height: 25px; }
+      .dash_container .dash_item .second_content .da_to_content .dash_area {
+        display: flex;
+        justify-content: center; }
+        .dash_container .dash_item .second_content .da_to_content .dash_area .dash_total_sales {
+          width: 280px;
+          height: auto;
+          box-shadow: 3px 3px 3px 3px rgba(150, 150, 150, 0.3);
+          border-radius: 25px;
+          padding: 20px;
+          margin-left: 30px;
+          display: flex;
+          flex-direction: column; }
+          .dash_container .dash_item .second_content .da_to_content .dash_area .dash_total_sales .dash_total_item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #494949; }
+            .dash_container .dash_item .second_content .da_to_content .dash_area .dash_total_sales .dash_total_item .img {
+              width: 50px;
+              height: 50px;
+              border-radius: 100%;
+              box-shadow: 3px 3px 3px 3px rgba(150, 150, 150, 0.3); }
+          .dash_container .dash_item .second_content .da_to_content .dash_area .dash_total_sales .dash_total_content {
+            margin-top: 10px; }
+            .dash_container .dash_item .second_content .da_to_content .dash_area .dash_total_sales .dash_total_content .dahs_tosales {
+              font-size: 30px;
+              font-weight: bold;
+              margin-left: 10px; }
+      .dash_container .dash_item .second_content .da_to_content .chart_area {
+        display: flex;
+        margin-top: 40px;
+        width: 100%; }
+        .dash_container .dash_item .second_content .da_to_content .chart_area .chart_item {
+          width: 670px;
+          border-radius: 30px;
+          box-shadow: 3px 3px 3px 3px rgba(150, 150, 150, 0.3);
+          margin-left: 30px; }
+          .dash_container .dash_item .second_content .da_to_content .chart_area .chart_item .chart_content {
+            padding: 20px; }
+            .dash_container .dash_item .second_content .da_to_content .chart_area .chart_item .chart_content .barchart_title {
+              font-size: 16px;
+              font-weight: bold; }
+        .dash_container .dash_item .second_content .da_to_content .chart_area .chart_item_snd {
+          width: 320px;
+          border-radius: 30px;
+          box-shadow: 3px 3px 3px 3px rgba(150, 150, 150, 0.3);
+          margin-left: 30px; }
+          .dash_container .dash_item .second_content .da_to_content .chart_area .chart_item_snd .piechart_content {
+            padding: 20px; }
+            .dash_container .dash_item .second_content .da_to_content .chart_area .chart_item_snd .piechart_content .piechart_title {
+              font-size: 16px;
+              font-weight: bold;
+              margin-bottom: 20px;
+              display: block; }
+      .dash_container .dash_item .second_content .da_to_content .order_area {
+        margin-left: 30px;
+        margin-top: 40px;
+        width: 1025px; }
+        .dash_container .dash_item .second_content .da_to_content .order_area .order_content {
+          border-radius: 30px;
+          box-shadow: 3px 3px 3px 3px rgba(150, 150, 150, 0.3);
+          padding: 20px; }
+          .dash_container .dash_item .second_content .da_to_content .order_area .order_content .order_title {
+            display: block;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 20px; }
+          .dash_container .dash_item .second_content .da_to_content .order_area .order_content .order_table_area .order_table_head {
+            display: flex;
+            font-size: 14px;
+            color: #757575;
+            border-bottom: 1px solid #cccccc;
+            padding-bottom: 10px; }
+          .dash_container .dash_item .second_content .da_to_content .order_area .order_content .order_table_area .table_body {
+            height: 300px;
+            overflow: scroll;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column; }
+            .dash_container .dash_item .second_content .da_to_content .order_area .order_content .order_table_area .table_body .table_tr {
+              display: flex;
+              padding: 5px 0;
+              border-bottom: 1px solid #cccccc; }
+
+/*# sourceMappingURL=dashboard.css.map */
