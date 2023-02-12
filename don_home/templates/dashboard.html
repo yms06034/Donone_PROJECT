@@ -75,16 +75,14 @@ Dashboard
             <select class="select_box" name="order_date" id="select_box">
               <option value="">조회 선택</option>
               <option value="odyear">1년</option>
-              <option value="odquarter">3개월</option>
               <option value="odmonth">저번달</option>
               <option value="odweek">저번주</option>
-              <option value="oddays">어제</option>
             </select>
           </form>
         </div>
       </div>
 
-
+      <!-- TOTAL AREA -->
       <div id="total_dash" class="da_to_content">
         <div class="dash_area">
           <div class="dash_total_sales">
@@ -120,18 +118,17 @@ Dashboard
         <div class="chart_area">
           <div class="chart_item">
             <div class="chart_content">
-              <span class="barchart_title">일별 매출</span>
+              <span class="barchart_title">매출 현황</span>
               <canvas id="to_barChart"></canvas>
             </div>
           </div>
           <div class="chart_item_snd">
             <div class="piechart_content">
-              <span class="piechart_title">제품 판매 현황</span>
+              <span class="piechart_title">플랫폼 판매 현황</span>
               <canvas id="to_pieChart"></canvas>
             </div>
           </div>
         </div>
-
         <!-- Order Details -->
         <div class="order_area">
           <div class="order_content">
@@ -183,7 +180,7 @@ Dashboard
         </div>
       </div>
 
-
+      <!-- ABLY AREA -->
       <div id="ably_dash" class="da_to_content display_none">
         <div class="dash_area">
           <div class="dash_total_sales">
@@ -192,7 +189,8 @@ Dashboard
               <img class="img" src="https://i.ibb.co/D1xqpg1/totalsales.png" alt="">
             </div>
             <div class="dash_total_content">
-              <span class="dahs_tosales">￦ {{ ably_plat }}</span>
+              <span class="dahs_tosales_w">￦</span>
+              <span class="dahs_tosales">{{ ably_plat }}</span>
             </div>
           </div>
           <div class="dash_total_sales">
@@ -215,22 +213,20 @@ Dashboard
           </div>
         </div>
         <!-- Chaert -->
-        <!-- Chaert -->
         <div class="chart_area">
           <div class="chart_item">
             <div class="chart_content">
-              <span class="barchart_title">일별 매출</span>
-              <canvas id="to_barChart"></canvas>
+              <span class="barchart_title">매출 현황</span>
+              <canvas id="ab_barChart"></canvas>
             </div>
           </div>
           <div class="chart_item_snd">
             <div class="piechart_content">
               <span class="piechart_title">제품 판매 현황</span>
-              <canvas id="to_pieChart"></canvas>
+              <canvas id="ab_pieChart"></canvas>
             </div>
           </div>
         </div>
-
         <!-- Order Details -->
         <div class="order_area">
           <div class="order_content">
@@ -282,7 +278,7 @@ Dashboard
         </div>
       </div>
 
-
+      <!-- CAFE24 AREA -->
       <div id="cafe24_dash" class="da_to_content display_none">
         <div class="dash_area">
           <div class="dash_total_sales">
@@ -291,7 +287,8 @@ Dashboard
               <img class="img" src="https://i.ibb.co/D1xqpg1/totalsales.png" alt="">
             </div>
             <div class="dash_total_content">
-              <span class="dahs_tosales">￦ {{ cafe_plat }}</span>
+              <span class="dahs_tosales_w">￦</span>
+              <span class="dahs_tosales">{{ cafe_plat }}</span>
             </div>
           </div>
           <div class="dash_total_sales">
@@ -314,22 +311,20 @@ Dashboard
           </div>
         </div>
         <!-- Chaert -->
-        <!-- Chaert -->
         <div class="chart_area">
           <div class="chart_item">
             <div class="chart_content">
-              <span class="barchart_title">일별 매출</span>
-              <canvas id="to_barChart"></canvas>
+              <span class="barchart_title">매출 현황</span>
+              <canvas id="cf_barChart"></canvas>
             </div>
           </div>
           <div class="chart_item_snd">
             <div class="piechart_content">
               <span class="piechart_title">제품 판매 현황</span>
-              <canvas id="to_pieChart"></canvas>
+              <canvas id="cf_pieChart"></canvas>
             </div>
           </div>
         </div>
-
         <!-- Order Details -->
         <div class="order_area">
           <div class="order_content">
@@ -381,7 +376,7 @@ Dashboard
         </div>
       </div>
 
-
+      <!-- NAVER AREA -->
       <div id="naver_dash" class="da_to_content display_none">
         <div class="dash_area">
           <div class="dash_total_sales">
@@ -390,7 +385,8 @@ Dashboard
               <img class="img" src="https://i.ibb.co/D1xqpg1/totalsales.png" alt="">
             </div>
             <div class="dash_total_content">
-              <span class="dahs_tosales">￦ {{ naver_plat }}</span>
+              <span class="dahs_tosales_w">￦</span>
+              <span class="dahs_tosales">{{ naver_plat }}</span>
             </div>
           </div>
           <div class="dash_total_sales">
@@ -413,22 +409,20 @@ Dashboard
           </div>
         </div>
         <!-- Chaert -->
-        <!-- Chaert -->
         <div class="chart_area">
           <div class="chart_item">
             <div class="chart_content">
-              <span class="barchart_title">일별 매출</span>
-              <canvas id="to_barChart"></canvas>
+              <span class="barchart_title">매출 현황</span>
+              <canvas id="na_barChart"></canvas>
             </div>
           </div>
           <div class="chart_item_snd">
             <div class="piechart_content">
               <span class="piechart_title">제품 판매 현황</span>
-              <canvas id="to_pieChart"></canvas>
+              <canvas id="na_pieChart"></canvas>
             </div>
           </div>
         </div>
-
         <!-- Order Details -->
         <div class="order_area">
           <div class="order_content">
@@ -570,32 +564,62 @@ Dashboard
   });
 
 // Chart
+const dateChart = new Date();
+const lastYear = dateChart.getFullYear() - 1;
+const nowYear = dateChart.getFullYear();
+const lastMonth = dateChart.getMonth() + 1;
+
+const fnll_date = `${lastYear}-${lastMonth} ~ ${nowYear}-${lastMonth}`
+console.log(fnll_date);
+
+
+
 const toctx = document.getElementById('to_barChart');
 const abctx = document.getElementById('ab_barChart');
 const cfctx = document.getElementById('cf_barChart');
 const nactx = document.getElementById('na_barChart');
 
-const p_toctx = document.getElementById('to_pieChart')
+const p_toctx = document.getElementById('to_pieChart');
+const a_toctx = document.getElementById('ab_pieChart');
+const b_toctx = document.getElementById('cf_pieChart');
+const c_toctx = document.getElementById('na_pieChart');
 
-let to_mon_data = {{ to_mon|safe }};
-let to_o_data = {{ to_data|safe }};
-console.log('to_mon_data:', to_mon_data);
+
+const to_year = {{ to_mon | safe }};
+const to_year_data = {{ to_data | safe }};
+const ab_year = {{ ab_mon | safe }};
+const ab_year_data = {{ ab_data | safe }};
+const cf_year = {{ cf_mon | safe }};
+const cf_year_data = {{ cf_data | safe }};
+const na_year = {{ na_mon | safe }};
+const na_year_data = {{ na_data | safe }};
+
+const t_pn = {{ tpn | safe }};
+const t_pt = {{ tpt | safe }};
+const a_pn = {{ apn | safe }};
+const a_pt = {{ apt | safe }};
+const c_pn = {{ cpn | safe }};
+const c_pt = {{ cpt | safe }};
+const n_pn = {{ npn | safe }};
+const n_pt = {{ npt | safe }};
+
+console.log(to_year);
 
 
 new Chart(toctx, {
   type: 'bar',
   data: {
-    labels: to_mon_data,
+    labels: to_year,
     datasets: [{
-      label: '# of Votes',
-      data: to_o_data,
+      label: fnll_date + `  (단위 : month)`,
+      data: to_year_data,
       borderWidth: 1
     }]
   },
   options: {
     scales: {
       y: {
-        beginAtZero: true
+        // beginAtZero: true
       }
     }
   }
@@ -603,82 +627,136 @@ new Chart(toctx, {
 new Chart(p_toctx, {
   type: 'pie',
   data :{
-    labels: ['Red','Blue','Yellow'],
+    labels: t_pn,
   datasets: [{
-    label: 'My First Dataset',
-    data: [300, 50, 100],
+    label: '',
+    data: t_pt,
     backgroundColor: [
-      'rgb(255, 99, 132)',
-      'rgb(54, 162, 235)',
-      'rgb(255, 205, 86)'
+      'rgb(0, 122, 255)',
+      'rgb(249, 126, 165)',
+      'rgb(32, 207, 17)'
     ],
     hoverOffset: 4
   }],
   options: {
     scales: {
       y: {
-        beginAtZero: true
+        // beginAtZero: true
       }
     }
   }
 }});
 
+// ably Chart
 new Chart(abctx, {
   type: 'bar',
   data: {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    labels: to_year,
     datasets: [{
-      label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3],
+      label: fnll_date + `  (단위 : month)`,
+      data: ab_year_data,
       borderWidth: 1
     }]
   },
   options: {
     scales: {
       y: {
-        beginAtZero: true
+        // beginAtZero: true
       }
     }
   }
 });
+new Chart(a_toctx, {
+  type: 'pie',
+  data :{
+    labels: a_pn,
+  datasets: [{
+    label: '',
+    data: a_pt,
+    // hoverOffset: 4
+  }],
+  options: {
+    scales: {
+      y: {
+        // beginAtZero: true
+      }
+    }
+  }
+}});
 
+// cafe24 Chart
 new Chart(cfctx, {
   type: 'bar',
   data: {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    labels: to_year,
     datasets: [{
-      label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3],
+      label: fnll_date + `  (단위 : month)`,
+      data: cf_year_data,
       borderWidth: 1
     }]
   },
   options: {
     scales: {
       y: {
-        beginAtZero: true
+        // beginAtZero: true
       }
     }
   }
 });
+new Chart(b_toctx, {
+  type: 'pie',
+  data :{
+    labels: c_pn,
+  datasets: [{
+    label: '',
+    data: c_pt,
+    hoverOffset: 4
+  }],
+  options: {
+    scales: {
+      y: {
+        // beginAtZero: true
+      }
+    }
+  }
+}});
 
+// naver Chart
 new Chart(nactx, {
   type: 'bar',
   data: {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    labels: to_year,
     datasets: [{
-      label: '# of Votes',
-      data: [12, 19, 3, 5, 2, 3],
+      label: fnll_date + `  (단위 : month)`,
+      data: na_year_data,
       borderWidth: 1
     }]
   },
   options: {
     scales: {
       y: {
-        beginAtZero: true
+        // beginAtZero: true
       }
     }
   }
 });
+new Chart(c_toctx, {
+  type: 'pie',
+  data :{
+    labels: n_pn,
+  datasets: [{
+    label: '',
+    data: n_pt,
+    hoverOffset: 4
+  }],
+  options: {
+    scales: {
+      y: {
+        // beginAtZero: true
+      }
+    }
+  }
+}});
 
 
 </script>

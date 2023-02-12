@@ -18,6 +18,7 @@ from cp2_don.don_settings import MYSQL_CONN
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
 from sqlalchemy.sql import text, intersect
+
 import pandas as pd
 import numpy as np
 import json
@@ -26,6 +27,8 @@ from don_home.models import Ably_token, Cafe24, AblyProductInfo, AblySalesInfo
 from don_home.serializers import AblySerializer, Cafe24Serializer, AblyProductSerializer, AblySalseSerializer
 from don_home.apis.ably import AblyDataInfo
 from don_home.apis.cafe24 import cafe24_df
+from don_home.Dashboard.chart_year import Chart_pre_year, Product_total_year, Product_re_year, total_order_year, total_sales_year, detail_order_year
+from don_home.Dashboard.chart_month import Chart_pre_month, Product_total_month, Product_re_month, total_order_month, total_sales_month, detail_order_month
 
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -193,25 +196,6 @@ def usertoken(request):
                 extraShippingCost = df_pro['extraShippingCost'][i],
                 user_id = request.user.id)
             ably_product.save()
-
-            # try:
-            #     data = AblySalesInfo.objects.raw('SELECT * FROM don_home_ablysalesinfo GROUP BY productOrderNumber')
-            #     data.delete()
-            # except:
-            #     pass
-        # data3 = Cafe24.objects.select_related('user').filter(user_id=request.user.id).values()
-        # admin_id = data3[0]['cafe24_id']
-        # admin_pw = data3[0]['cafe24_pw']
-        # client_id = data3[0]['cafe24_clientid']
-        # client_secret = data3[0]['cafe24_client_secret']
-        # mall_id = data3[0]['cafe24_mallid']
-        # encode_csrf_token = data3[0]['cafe24_encode_csrf_token']
-        # redirect_uri = data3[0]['cafe24_redirect_uri']
-        # total_api = call_total_api(admin_id, admin_pw, client_id, client_secret, mall_id, encode_csrf_token, redirect_uri)
-        # categories = total_api['categories']
-        # products = total_api['products']
-        # orders = total_api['orders']
-        # coupons = total_api['coupons']
         return render(request, 'user/token_info.html', {'df' : df, 
                                                         'df_pro' : df_pro,})
     return render(request, 'user/token_info.html')
@@ -351,765 +335,79 @@ def dashboard(request):
     s = Session()
     conn = engine.raw_connection()
     select_box = request.GET.get('order_date')
-    to_de_order = []
-    ab_de_order = []
-    cf_de_order = []
-    na_de_order = []
 
-    
-    ably_plat = []
-    cafe_plat = []
-    naver_plat = []
-
-    # total_order_d = []
-    # ably_order = []
-    # cafe_order = []
-    # naver_order = []
-
-    # total_re = []
-    # ably_re = []
-    # cafe_re = []
-    # naver_re = []
+    to_d, ab_d, cf_d, na_d = detail_order_year()
+    # 총 판매가
+    result_t, ab_sales, cf_sales, na_sales = total_sales_year()
+    # 총 주문 건수
+    to_cou_order, ab_cou_order, cf_cou_order, na_cou_order = total_order_year()
+    # 매출 현황 Bar 그래프
+    to_mon, to_data_t, ab_data, ab_mon, cf_data, cf_mon, na_data, na_mon = Chart_pre_year()
+    # 제품 별 판매현황
+    tpn, tpt, apn, apt, cpn, cpt, npn, npt = Product_total_year()
+    # 총 반품 건수
+    nare, cfre, abre, tore = Product_re_year()
 
     if select_box == 'odyear':
         # 주문 내역 상세
-        SQL_DE = """
-        SELECT Platform, `주문번호`, Status, `주문일자`, `고객명`, `상품명`, `수량`, `판매가`, Profit 
-        FROM don_home_unionorder
-        WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-        ORDER BY `주문일자` DESC;
-        """
-        to_d = s.execute(text(SQL_DE))
-        SQL_DE_AB = """
-        SELECT Platform, `주문번호`, Status, `주문일자`, `고객명`, `상품명`, `수량`, `판매가`, Profit
-        FROM don_home_unionorder
-        WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-        HAVING Platform = 'ABLY';
-        """
-        ab_d = s.execute(text(SQL_DE_AB))
-        SQL_DE_CF = """
-        SELECT Platform, `주문번호`, Status, `주문일자`, `고객명`, `상품명`, `수량`, `판매가`, Profit
-        FROM don_home_unionorder
-        WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-        HAVING Platform = 'Homepage';
-        """
-        cf_d = s.execute(text(SQL_DE_CF))
-        SQL_DE_NA = """
-        SELECT Platform, `주문번호`, Status, `주문일자`, `고객명`, `상품명`, `수량`, `판매가`, Profit
-        FROM don_home_unionorder
-        WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-        HAVING Platform = '스마트스토어';
-        """
-        na_d = s.execute(text(SQL_DE_NA))
-
+        to_d, ab_d, cf_d, na_d = detail_order_year()
         # 총 판매가
-        SQL1 = """
-        SELECT SUM(판매가)
-        FROM don_home_unionorder dhu
-        WHERE 주문일자 >= date_add(now(), interval -1 YEAR)
-        """
-        result = s.execute(text(SQL1))
-        for re in result:
-            result_t = re[0]
-
-        SQL2 = """
-        SELECT SUM(판매가)
-        FROM don_home_unionorder dhu
-        WHERE 주문일자 >= date_add(now(), interval -1 YEAR)
-        GROUP BY Platform
-        HAVING Platform = 'ABLY';
-        """
-        a_result = s.execute(text(SQL2))
-        for re in a_result:
-            ab_sales = re[0]
-
-        SQL3 = """
-        SELECT SUM(판매가)
-        FROM don_home_unionorder dhu
-        WHERE 주문일자 >= date_add(now(), interval -1 YEAR)
-        GROUP BY Platform
-        HAVING Platform = 'Homepage';
-        """
-        cf_result = s.execute(text(SQL3))
-        for re in cf_result:
-            cf_sales = re[0]
-
-        SQL4 = """
-        SELECT SUM(판매가)
-        FROM don_home_unionorder dhu
-        WHERE 주문일자 >= date_add(now(), interval -1 YEAR)
-        GROUP BY Platform
-        HAVING Platform = '스마트스토어';
-        """
-        na_result = s.execute(text(SQL4))
-        for re in na_result:
-            na_sales = re[0]
-
+        result_t, ab_sales, cf_sales, na_sales = total_sales_year()
         # 총 주문 건수
-        ORDER1 = """
-        SELECT COUNT(Status) as total
-        FROM don_home_unionorder
-        WHERE (`주문일자` >= date_add(now(), interval -1 YEAR));
-        """
-        to_order = s.execute(text(ORDER1))
-        for to in to_order:
-            to_cou_order = to[0]
-
-        ORDER2 = """
-        SELECT COUNT(Status) as total
-        FROM don_home_unionorder
-        WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-        GROUP BY Platform 
-        HAVING Platform = 'ABLY';
-        """
-        ab_order = s.execute(text(ORDER2))
-        for to in ab_order:
-            ab_cou_order = to[0]
-
-        ORDER3 = """
-        SELECT COUNT(Status) as total
-        FROM don_home_unionorder
-        WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-        GROUP BY Platform 
-        HAVING Platform = 'ABLY';
-        """
-        cf_order = s.execute(text(ORDER3))
-        for to in cf_order:
-            cf_cou_order = to[0]
-
-        ORDER4 = """
-        SELECT COUNT(Status) as total
-        FROM don_home_unionorder
-        WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-        GROUP BY Platform 
-        HAVING Platform = 'ABLY';
-        """
-        na_order = s.execute(text(ORDER4))
-        for to in na_order:
-            na_cou_order = to[0]
-
+        to_cou_order, ab_cou_order, cf_cou_order, na_cou_order = total_order_year()
+        # 매출 현황 Bar 그래프
+        to_mon, to_data_t, ab_data, ab_mon, cf_data, cf_mon, na_data, na_mon = Chart_pre_year()
+        # 제품 별 판매현황
+        tpn, tpt, apn, apt, cpn, cpt, npn, npt = Product_total_year()
         # 총 반품 건수
-        RE1 = """
-        SELECT COUNT(`취소/반품`)
-        FROM don_home_unionorder dhu 
-        WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-        GROUP BY `취소/반품`
-        HAVING `취소/반품` = 'T';
-        """
-        to_re = s.execute(text(RE1))
-        for to in to_re:
-            tore = to[0]
+        nare, cfre, abre, tore = Product_re_year()
 
-        RE2 = """
-        SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-        WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-        GROUP BY Platform, `취소/반품`
-        HAVING `취소/반품` = 'T' AND Platform = 'ABLY';
-        """
-        ab_re = s.execute(text(RE2))
-        for to in ab_re:
-            abre = to[0]
+        context = {'td':to_d,'ab':ab_d,'cf':cf_d,'na':na_d,
+                    'total':result_t,'ably_plat':ab_sales,'cafe_plat':cf_sales,'naver_plat':na_sales,
+                    'total_order':to_cou_order,'ably_order':ab_cou_order,'cafe_order':cf_cou_order,'naver_order':na_cou_order,
+                    'total_re':tore,'ably_re':abre,'cafe_re':cfre,'naver_re':nare,
+                    'to_mon':to_mon,'to_data':to_data_t,'ab_mon':ab_mon,'ab_data':ab_data,'cf_mon':cf_mon,'cf_data':cf_data,'na_mon':na_mon,'na_data':na_data,
+                    'tpn':tpn, 'tpt':tpt, 'apn':apn, 'apt':apt, 'cpn':cpn, 'cpt':cpt, 'npn':npn, 'npt':npt
+                    }
+        return render(request, 'dashboard.html', context = context)
 
-        RE2 = """
-        SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-        WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-        GROUP BY Platform, `취소/반품`
-        HAVING `취소/반품` = 'T' AND Platform = 'Homepage';
-        """
-        cf_re = s.execute(text(RE2))
-        for to in cf_re:
-            cfre = to[0]
+    elif select_box == 'odmonth':
+        # 주문 내역 상세
+        to_d, ab_d, cf_d, na_d = detail_order_month()
+        # 총 판매가
+        result_t, ab_sales, cf_sales, na_sales = total_sales_month()
+        # 총 주문 건수
+        to_cou_order, ab_cou_order, cf_cou_order, na_cou_order = total_order_month()
+        # 매출 현황 Bar 그래프
+        to_mon, to_data_t, ab_data, ab_mon, cf_data, cf_mon, na_data, na_mon = Chart_pre_month()
+        # 제품 별 판매현황
+        tpn, tpt, apn, apt, cpn, cpt, npn, npt = Product_total_month()
+        # 총 반품 건수
+        mnare, mcfre, mabre, mtore = Product_re_month()
 
-        RE2 = """
-        SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-        WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-        GROUP BY Platform, `취소/반품`
-        HAVING `취소/반품` = 'T' AND Platform = '스마트스토어';
-        """
-        na_re = s.execute(text(RE2))
-        for to in na_re:
-            nare = to[0]
-
-        # 월별 주문액 확인
-        MONTN_OR = """
-        SELECT 
-            DATE_FORMAT(`주문일자`,'%Y-%m') date
-            ,SUM(판매가) 
-        FROM don_home_unionorder
-        WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-        GROUP BY date
-        ORDER BY date;
-        """
-        to_mon = []
-        to_data = []
-        to_mn = s.execute(text(MONTN_OR))
-        for to in to_mn:
-            to_mon.append(to[0])
-            to_data.append(to[1])
-            
-        return render(request, 'dashboard.html', {'td':to_d,
-                                                  'ab':ab_d,
-                                                  'cf':cf_d,
-                                                  'na':na_d,
-                                                  'total':result_t,
-                                                  'ably_plat':ab_sales,
-                                                  'cafe_plat':cf_sales,
-                                                  'naver_plat':na_sales,
-                                                  'total_order':to_cou_order,
-                                                  'ably_order':ab_cou_order,
-                                                  'cafe_order':cf_cou_order,
-                                                  'naver_order':na_cou_order,
-                                                  'total_re':tore,
-                                                  'ably_re':abre,
-                                                  'cafe_re':cfre,
-                                                  'naver_re':nare,
-                                                  'to_mon':to_mon,
-                                                  'to_data':to_data,
-                                                  })
+        context = {'td':to_d,'ab':ab_d,'cf':cf_d,'na':na_d,
+                    'total':result_t,'ably_plat':ab_sales,'cafe_plat':cf_sales,'naver_plat':na_sales,
+                    'total_order':to_cou_order,'ably_order':ab_cou_order,'cafe_order':cf_cou_order,'naver_order':na_cou_order,
+                    'total_re':mtore,'ably_re':mabre,'cafe_re':mcfre,'naver_re':mnare,
+                    'to_mon':to_mon,'to_data':to_data_t,'ab_mon':ab_mon,'ab_data':ab_data,'cf_mon':cf_mon,'cf_data':cf_data,'na_mon':na_mon,'na_data':na_data,
+                    'tpn':tpn, 'tpt':tpt, 'apn':apn, 'apt':apt, 'cpn':cpn, 'cpt':cpt, 'npn':npn, 'npt':npt
+                    }
+        return render(request, 'dashboard.html', context = context)
 
         
+    elif select_box == 'odweek':
+        pass
+    
 
-    #     SQL__1 = """
-    #     SELECT COUNT(Status) as or_total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-    #     GROUP BY Platform;
-    #     """
-    #     data1 = pd.read_sql(SQL__1, conn)
-    #     data1['or_total'] = data1['or_total'].astype('int')
-    #     total_order = list(np.array(data1['or_total'].tolist()))
-
-    #     cafe_order = total_order[0]
-    #     ably_order = total_order[1]
-    #     naver_order = total_order[2]
-
-    #     SQL___1 = """
-    #     SELECT COUNT(Status)
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 YEAR));
-    #     """
-    #     s = Session()
-    #     total_oresult = s.execute(text(SQL___1))
-    #     for tre in total_oresult:
-    #         total_order_d = tre[0]
-
-    #     SQL2 = """
-    #     SELECT COUNT(Status) as or_total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-    #     GROUP BY Platform;
-    #     """
-    #     data1 = pd.read_sql(SQL2, conn)
-    #     data1['or_total'] = data1['or_total'].astype('int')
-    #     total_order = list(np.array(data1['or_total'].tolist()))
-
-    #     cafe_order = total_order[0]
-    #     ably_order = total_order[1]
-    #     naver_order = total_order[2]
-
-    #     SQL3 = """
-    #     SELECT COUNT(Status)
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 YEAR));
-    #     """
-    #     s = Session()
-    #     total_oresult = s.execute(text(SQL___1))
-    #     for tre in total_oresult:
-    #         total_order_d = tre[0]
-
-    #     # 총 반품 건수
-    #     SQL_4to = """
-    #     SELECT COUNT(`취소/반품`)
-    #     FROM don_home_unionorder dhu 
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-    #     GROUP BY `취소/반품`
-    #     HAVING `취소/반품` = 'T';
-    #     """
-    #     total_ret = s.execute(text(SQL_4to))
-    #     for tre in total_ret:
-    #         total_re = tre[0]
-    #     SQL_4cf = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = 'Homepage';
-    #     """
-    #     cafe_ret = s.execute(text(SQL_4cf))
-    #     for tre in cafe_ret:
-    #         cafe_re = tre[0]
-    #     SQL_4ab = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = 'ABLY';
-    #     """
-    #     ably_ret = s.execute(text(SQL_4ab))
-    #     for tre in ably_ret:
-    #         ably_re = tre[0]
-    #     SQL_4na = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 YEAR))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = '스마트스토어';
-    #     """
-    #     naver_ret = s.execute(text(SQL_4na))
-    #     for tre in naver_ret:
-    #         naver_re = tre[0]
-
-
-
-
-    # elif select_box == 'odquarter':
-    #     SQL2 = """
-    #     SELECT SUM(판매가)
-    #     FROM don_home_unionorder dhu
-    #     WHERE 주문일자 >= date_add(now(), interval -3 MONTH)
-    #     """
-    #     s = Session()
-    #     result = s.execute(text(SQL2))
-    #     for re in result:
-    #         result_t = re[0]
-
-    #     SQL_2 = """
-    #     SELECT SUM(`판매가`) as total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -3 MONTH))
-    #     GROUP BY Platform;
-    #     """
-    #     data = pd.read_sql(SQL_2, conn)
-    #     data['total'] = data['total'].astype('int')
-    #     total_plat = list(np.array(data['total'].tolist()))
-
-    #     cafe_plat = total_plat[0]
-    #     ably_plat = total_plat[1]
-    #     naver_plat = total_plat[2]
-
-    #     SQL__2 = """
-    #     SELECT COUNT(Status) as or_total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -3 MONTH))
-    #     GROUP BY Platform;
-    #     """
-    #     data1 = pd.read_sql(SQL__2, conn)
-    #     data1['or_total'] = data1['or_total'].astype('int')
-    #     total_order = list(np.array(data1['or_total'].tolist()))
-
-    #     cafe_order = total_order[0]
-    #     ably_order = total_order[1]
-    #     naver_order = total_order[2]
-
-    #     SQL___2 = """
-    #     SELECT COUNT(Status)
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -3 MONTH));
-    #     """
-    #     s = Session()
-    #     total_oresult = s.execute(text(SQL___2))
-    #     for tre in total_oresult:
-    #         total_order_d = tre[0]
-
-    #     # 총 반품 건수
-    #     SQL_4to = """
-    #     SELECT COUNT(`취소/반품`)
-    #     FROM don_home_unionorder dhu 
-    #     WHERE (`주문일자` >= date_add(now(), interval -3 MONTH))
-    #     GROUP BY `취소/반품`
-    #     HAVING `취소/반품` = 'T';
-    #     """
-    #     total_ret = s.execute(text(SQL_4to))
-    #     for tre in total_ret:
-    #         total_re = tre[0]
-    #     SQL_4cf = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -3 MONTH))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = 'Homepage';
-    #     """
-    #     cafe_ret = s.execute(text(SQL_4cf))
-    #     for tre in cafe_ret:
-    #         cafe_re = tre[0]
-    #     SQL_4ab = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -3 MONTH))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = 'ABLY';
-    #     """
-    #     ably_ret = s.execute(text(SQL_4ab))
-    #     for tre in ably_ret:
-    #         ably_re = tre[0]
-    #     SQL_4na = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -3 MONTH))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = '스마트스토어';
-    #     """
-    #     naver_ret = s.execute(text(SQL_4na))
-    #     for tre in naver_ret:
-    #         naver_re = tre[0]
-
-
-    # elif select_box == 'odmonth':
-    #     SQL3 = """
-    #     SELECT SUM(판매가)
-    #     FROM don_home_unionorder dhu
-    #     WHERE 주문일자 >= date_add(now(), interval -1 MONTH)
-    #     """
-    #     s = Session()
-    #     result = s.execute(text(SQL3))
-    #     for re in result:
-    #         result_t = re[0]
-
-    #     SQL_3 = """
-    #     SELECT SUM(`판매가`) as total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 MONTH))
-    #     GROUP BY Platform;
-    #     """
-    #     data = pd.read_sql(SQL_3, conn)
-    #     data['total'] = data['total'].astype('int')
-    #     total_plat = list(np.array(data['total'].tolist()))
-
-    #     cafe_plat = total_plat[0]
-    #     ably_plat = total_plat[1]
-    #     naver_plat = total_plat[2]
-
-    #     SQL__3 = """
-    #     SELECT COUNT(Status) as or_total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 MONTH))
-    #     GROUP BY Platform;
-    #     """
-    #     data1 = pd.read_sql(SQL__3, conn)
-    #     data1['or_total'] = data1['or_total'].astype('int')
-    #     total_order = list(np.array(data1['or_total'].tolist()))
-
-    #     cafe_order = total_order[0]
-    #     ably_order = total_order[1]
-    #     naver_order = total_order[2]
-
-    #     SQL___3 = """
-    #     SELECT COUNT(Status)
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 MONTH));
-    #     """
-    #     s = Session()
-    #     total_oresult = s.execute(text(SQL___3))
-    #     for tre in total_oresult:
-    #         total_order_d = tre[0]
-
-    #     # 총 반품 건수
-    #     SQL_4to = """
-    #     SELECT COUNT(`취소/반품`)
-    #     FROM don_home_unionorder dhu 
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 MONTH))
-    #     GROUP BY `취소/반품`
-    #     HAVING `취소/반품` = 'T';
-    #     """
-    #     total_ret = s.execute(text(SQL_4to))
-    #     for tre in total_ret:
-    #         total_re = tre[0]
-    #     SQL_4cf = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 MONTH))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = 'Homepage';
-    #     """
-    #     cafe_ret = s.execute(text(SQL_4cf))
-    #     for tre in cafe_ret:
-    #         cafe_re = tre[0]
-    #     SQL_4ab = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 MONTH))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = 'ABLY';
-    #     """
-    #     ably_ret = s.execute(text(SQL_4ab))
-    #     for tre in ably_ret:
-    #         ably_re = tre[0]
-    #     SQL_4na = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 MONTH))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = '스마트스토어';
-    #     """
-    #     naver_ret = s.execute(text(SQL_4na))
-    #     for tre in naver_ret:
-    #         naver_re = tre[0]
-
-        
-    # elif select_box == 'odweek':
-    #     SQL3 = """
-    #     SELECT SUM(판매가)
-    #     FROM don_home_unionorder dhu
-    #     WHERE 주문일자 >= date_add(now(), interval -1 WEEK)
-    #     """
-    #     s = Session()
-    #     result = s.execute(text(SQL3))
-    #     for re in result:
-    #         result_t = re[0]
-
-    #     # 총 판매금액
-    #     SQL_3cf = """
-    #     SELECT SUM(`판매가`) as total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 WEEK))
-    #     GROUP BY Platform
-    #     HAVING Platform = 'Homepage'
-    #     """
-    #     total_oresult = s.execute(text(SQL_3cf))
-    #     for tre in total_oresult:
-    #         cafe_plat = tre[0]
-    #     SQL_3ab = """
-    #     SELECT SUM(`판매가`) as total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 WEEK))
-    #     GROUP BY Platform
-    #     HAVING Platform = 'ABLY'
-    #     """
-    #     total_oresult = s.execute(text(SQL_3ab))
-    #     for tre in total_oresult:
-    #         ably_plat = tre[0]
-    #     SQL_3na = """
-    #     SELECT SUM(`판매가`) as total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 WEEK))
-    #     GROUP BY Platform
-    #     HAVING Platform = '스마트스토어'
-    #     """
-    #     total_oresult = s.execute(text(SQL_3na))
-    #     for tre in total_oresult:
-    #         naver_plat = tre[0]
-
-    #     # 주문 건수
-    #     SQL__3cf = """
-    #     SELECT COUNT(Status) as or_total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 WEEK))
-    #     GROUP BY Platform
-    #     HAVING Platform = 'Homepage'
-    #     """
-    #     cafe_oresult = s.execute(text(SQL__3cf))
-    #     for tre in cafe_oresult:
-    #         cafe_order = tre[0]
-
-    #     SQL__3ab = """
-    #     SELECT COUNT(Status) as or_total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 WEEK))
-    #     GROUP BY Platform
-    #     HAVING Platform = 'ABLY'
-    #     """
-    #     ably_oresult = s.execute(text(SQL__3ab))
-    #     for tre in ably_oresult:
-    #         ably_order = tre[0]
-
-    #     SQL__3na = """
-    #     SELECT COUNT(Status) as or_total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 WEEK))
-    #     GROUP BY Platform
-    #     HAVING Platform = '스마트스토어'
-    #     """
-    #     naver_oresult = s.execute(text(SQL__3na))
-    #     for tre in naver_oresult:
-    #         naver_order = tre[0]
-
-
-    #     SQL___3 = """
-    #     SELECT COUNT(Status)
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 WEEK))
-    #     """
-    #     s = Session()
-    #     total_oresult = s.execute(text(SQL___3))
-    #     for tre in total_oresult:
-    #         total_order_d = tre[0]
-
-    #     # 총 반품 건수
-    #     SQL_4to = """
-    #     SELECT COUNT(`취소/반품`)
-    #     FROM don_home_unionorder dhu 
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 WEEK))
-    #     GROUP BY `취소/반품`
-    #     HAVING `취소/반품` = 'T';
-    #     """
-    #     total_ret = s.execute(text(SQL_4to))
-    #     for tre in total_ret:
-    #         total_re = tre[0]
-    #     SQL_4cf = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 WEEK))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = 'Homepage';
-    #     """
-    #     cafe_ret = s.execute(text(SQL_4cf))
-    #     for tre in cafe_ret:
-    #         cafe_re = tre[0]
-    #     SQL_4ab = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 WEEK))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = 'ABLY';
-    #     """
-    #     ably_ret = s.execute(text(SQL_4ab))
-    #     for tre in ably_ret:
-    #         ably_re = tre[0]
-    #     SQL_4na = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 WEEK))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = '스마트스토어';
-    #     """
-    #     naver_ret = s.execute(text(SQL_4na))
-    #     for tre in naver_ret:
-    #         naver_re = tre[0]
-
-
-
-    # elif select_box == 'oddays':
-    #     SQL4 = """
-    #     SELECT SUM(판매가)
-    #     FROM don_home_unionorder dhu
-    #     WHERE 주문일자 >= date_add(now(), interval -1 DAY)
-    #     """
-    #     s = Session()
-    #     result = s.execute(text(SQL4))
-    #     for re in result:
-    #         result_t = re[0]
-        
-    #     # 총 판매금액
-    #     SQL_3cf = """
-    #     SELECT SUM(`판매가`) as total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 DAY))
-    #     GROUP BY Platform
-    #     HAVING Platform = 'Homepage'
-    #     """
-    #     total_oresult = s.execute(text(SQL_3cf))
-    #     for tre in total_oresult:
-    #         cafe_plat = tre[0]
-    #     SQL_3ab = """
-    #     SELECT SUM(`판매가`) as total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 DAY))
-    #     GROUP BY Platform
-    #     HAVING Platform = 'ABLY'
-    #     """
-    #     total_oresult = s.execute(text(SQL_3ab))
-    #     for tre in total_oresult:
-    #         ably_plat = tre[0]
-    #     SQL_3na = """
-    #     SELECT SUM(`판매가`) as total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 DAY))
-    #     GROUP BY Platform
-    #     HAVING Platform = '스마트스토어'
-    #     """
-    #     total_oresult = s.execute(text(SQL_3na))
-    #     for tre in total_oresult:
-    #         naver_plat = tre[0]
-
-    #     # 주문 건수
-    #     SQL__3cf = """
-    #     SELECT COUNT(Status) as or_total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 DAY))
-    #     GROUP BY Platform
-    #     HAVING Platform = 'Homepage'
-    #     """
-    #     cafe_oresult = s.execute(text(SQL__3cf))
-    #     for tre in cafe_oresult:
-    #         cafe_order = tre[0]
-
-    #     SQL__3ab = """
-    #     SELECT COUNT(Status) as or_total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 DAY))
-    #     GROUP BY Platform
-    #     HAVING Platform = 'ABLY'
-    #     """
-    #     ably_oresult = s.execute(text(SQL__3ab))
-    #     for tre in ably_oresult:
-    #         ably_order = tre[0]
-
-    #     SQL__3na = """
-    #     SELECT COUNT(Status) as or_total
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 DAY))
-    #     GROUP BY Platform
-    #     HAVING Platform = '스마트스토어'
-    #     """
-    #     naver_oresult = s.execute(text(SQL__3na))
-    #     for tre in naver_oresult:
-    #         naver_order = tre[0]
-
-    #     SQL___4 = """
-    #     SELECT COUNT(Status)
-    #     FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 DAY))
-    #     """
-    #     s = Session()
-    #     total_oresult = s.execute(text(SQL___4))
-    #     for tre in total_oresult:
-    #         total_order_d = tre[0]
-
-    #     # 총 반품 건수
-    #     SQL_4to = """
-    #     SELECT COUNT(`취소/반품`)
-    #     FROM don_home_unionorder dhu 
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 DAY))
-    #     GROUP BY `취소/반품`
-    #     HAVING `취소/반품` = 'T';
-    #     """
-    #     total_ret = s.execute(text(SQL_4to))
-    #     for tre in total_ret:
-    #         total_re = tre[0]
-    #     SQL_4cf = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 DAY))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = 'Homepage';
-    #     """
-    #     cafe_ret = s.execute(text(SQL_4cf))
-    #     for tre in cafe_ret:
-    #         cafe_re = tre[0]
-    #     SQL_4ab = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 DAY))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = 'ABLY';
-    #     """
-    #     ably_ret = s.execute(text(SQL_4ab))
-    #     for tre in ably_ret:
-    #         ably_re = tre[0]
-    #     SQL_4na = """
-    #     SELECT COUNT(`취소/반품`) AS `취소/반품 건수` FROM don_home_unionorder
-    #     WHERE (`주문일자` >= date_add(now(), interval -1 DAY))
-    #     GROUP BY Platform, `취소/반품`
-    #     HAVING `취소/반품` = 'T' AND Platform = '스마트스토어';
-    #     """
-    #     naver_ret = s.execute(text(SQL_4na))
-    #     for tre in naver_ret:
-    #         naver_re = tre[0]
     conn.close()
     engine.dispose()
 
+    context = {'td':to_d,'ab':ab_d,'cf':cf_d,'na':na_d,
+                    'total':result_t,'ably_plat':ab_sales,'cafe_plat':cf_sales,'naver_plat':na_sales,
+                    'total_order':to_cou_order,'ably_order':ab_cou_order,'cafe_order':cf_cou_order,'naver_order':na_cou_order,
+                    'total_re':tore,'ably_re':abre,'cafe_re':cfre,'naver_re':nare,
+                    'to_mon':to_mon,'to_data':to_data_t,'ab_mon':ab_mon,'ab_data':ab_data,'cf_mon':cf_mon,'cf_data':cf_data,'na_mon':na_mon,'na_data':na_data,
+                    'tpn':tpn, 'tpt':tpt, 'apn':apn, 'apt':apt, 'cpn':cpn, 'cpt':cpt, 'npn':npn, 'npt':npt
+                    }
 
-    return render(request, 'dashboard.html')
-
-    # {'total': result_t,
-    #                                         'cafe_plat': cafe_plat,
-    #                                         'ably_plat': ably_plat,
-    #                                         'naver_plat': naver_plat,
-    #                                         'cafe_order': cafe_order,
-    #                                         'ably_order': ably_order,
-    #                                         'naver_order': naver_order,
-    #                                         'total_order': total_order_d,
-    #                                         'total_re': total_re,
-    #                                         'ably_re': ably_re,
-    #                                         'cafe_re': cafe_re,
-    #                                         'naver_re': naver_re,
-    #                                         }
-
-def total_sales_info(request):
-    return 
+    return render(request, 'dashboard.html', context=context)

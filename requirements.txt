@@ -12,6 +12,7 @@ click==7.1.2
 colorama==0.4.6
 comm==0.1.2
 cryptography==39.0.0
+DateTime==5.0
 debugpy==1.6.6
 decorator==5.1.1
 Django==3.2.3
@@ -87,3 +88,4 @@ wcwidth==0.2.6
 webdriver-manager==3.8.5
 wsproto==1.2.0
 zipp==3.12.0
+zope.interface==5.5.2
