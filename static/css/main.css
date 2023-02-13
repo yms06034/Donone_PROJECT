@@ -424,4 +424,53 @@ body {
   font-weight: bold;
   margin-right: 10px; }
 
+.sen_container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 100px 0; }
+  .sen_container .sen_content {
+    display: flex; }
+    .sen_container .sen_content .sen_item {
+      display: flex;
+      flex-direction: column;
+      width: 100%; }
+      .sen_container .sen_content .sen_item .sen_title {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center; }
+        .sen_container .sen_content .sen_item .sen_title .s_title {
+          display: block;
+          font-size: 20px;
+          font-weight: bold; }
+        .sen_container .sen_content .sen_item .sen_title .sub_title {
+          display: block;
+          color: #686868;
+          font-size: 16px;
+          margin-top: 10px; }
+      .sen_container .sen_content .sen_item .senmain_item {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+        margin-top: 75px; }
+        .sen_container .sen_content .sen_item .senmain_item .sub_itme {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-right: 75px;
+          justify-content: flex-end; }
+          .sen_container .sen_content .sen_item .senmain_item .sub_itme:last-child {
+            margin-right: 0; }
+          .sen_container .sen_content .sen_item .senmain_item .sub_itme .subs {
+            font-size: 13px;
+            margin-top: 20px;
+            font-weight: 600; }
+
+.at {
+  margin-right: 69px;
+  margin-top: 11px; }
+
+.aa {
+  margin-top: 11px; }
+
 /*# sourceMappingURL=main.css.map */
