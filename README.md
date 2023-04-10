@@ -21,7 +21,12 @@
 	- Python, Django, Selenium, AWS, Tableau, Chart.js, Airflow
 
 - 페이지 구현 영상
-https://user-images.githubusercontent.com/98085184/230866467-a68590ae-29cb-4f64-80ab-0c95de6d69ae.mp4
+
+
+
+https://user-images.githubusercontent.com/98085184/230868655-d57ac5aa-4f2f-412e-abd7-accd443fceb0.mp4
+
+
 
 ## PIPELINE
 ![donone_pipeling](https://user-images.githubusercontent.com/98085184/230866641-feae6ecb-80ea-4509-8bea-e99c7b0466b2.png)
