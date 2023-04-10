@@ -1,4 +1,4 @@
-# ETL Project  (Airflow)
+# ETL PIPELINE PROJECT  (Airflow)
 실제 쇼핑몰 데이터 Airflow를 활용해 Pipeline으로 처리한 프로젝트
 
 ## Description
