@@ -31,7 +31,6 @@ from django.contrib.auth.models import User
 import logging
 import numpy as np
 
-# ===== 구조화된 로깅 시스템 =====
 class StructuredLogger:
     """구조화된 로깅을 위한 커스텀 로거 클래스"""
     
@@ -59,36 +58,28 @@ class StructuredLogger:
         return json.dumps(log_data, ensure_ascii=False, default=str)
     
     def debug(self, message, **kwargs):
-        """디버그 레벨 로그 - 상세한 디버깅 정보"""
         self.logger.debug(self._format_message(message, **kwargs))
     
     def info(self, message, **kwargs):
-        """정보 레벨 로그 - 일반적인 정보성 메시지"""
         self.logger.info(self._format_message(message, **kwargs))
     
     def warning(self, message, **kwargs):
-        """경고 레벨 로그 - 주의가 필요한 상황"""
         self.logger.warning(self._format_message(message, **kwargs))
     
     def error(self, message, **kwargs):
-        """에러 레벨 로그 - 에러 발생 시"""
         self.logger.error(self._format_message(message, **kwargs))
     
     def critical(self, message, **kwargs):
-        """크리티컬 레벨 로그 - 심각한 오류"""
         self.logger.critical(self._format_message(message, **kwargs))
 
 # 로거 인스턴스 생성
 logger = StructuredLogger('shopping_mall_etl')
 
-# ===== 성능 측정 데코레이터 =====
 def log_performance(func):
-    """함수 실행 시간과 결과를 로깅하는 데코레이터"""
     @wraps(func)
     def wrapper(*args, **kwargs):
         start_time = time.time()
         
-        # 함수 시작 로그
         logger.debug(f"Function started: {func.__name__}", 
                     function=func.__name__, 
                     module=func.__module__,
@@ -99,7 +90,6 @@ def log_performance(func):
             result = func(*args, **kwargs)
             duration = time.time() - start_time
             
-            # 성공 로그
             logger.info(f"Function completed: {func.__name__}", 
                        function=func.__name__, 
                        duration_seconds=round(duration, 2),
@@ -110,7 +100,6 @@ def log_performance(func):
         except Exception as e:
             duration = time.time() - start_time
             
-            # 실패 로그
             logger.error(f"Function failed: {func.__name__}", 
                         function=func.__name__, 
                         duration_seconds=round(duration, 2),
@@ -122,23 +111,23 @@ def log_performance(func):
             
     return wrapper
 
-# 동시 실행 제한을 위한 세마포어
+# 동시 실행 제한
 ABLY_SEMAPHORE = threading.Semaphore(10)
 CAFE24_SEMAPHORE = threading.Semaphore(20)
 
-# Default arguments
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
-    'start_date': datetime(2023, 2, 1),
+    'start_date': datetime(2023, 2, 10),
     'email_on_failure': True,
     'email_on_retry': False,
-    'retries': 2,
+    'retries': 2,  
     'retry_delay': timedelta(minutes=5),
-    'email': ['admin@example.com'],
+    'retry_exponential_backoff': True,  
+    'max_retry_delay': timedelta(minutes=30),
+    'email': ['admin@admin.com'],
 }
 
-# DAG 정의
 dag = DAG(
     'shopping_mall_etl_pipeline_v2',
     default_args=default_args,
@@ -211,11 +200,9 @@ def extract_single_ably(token):
                        user_id=token['ably_user_id'],
                        username=token['username'])
             
-            # 크롤링 시작 전 대기
             logger.debug("Waiting before crawling", wait_seconds=2)
             time.sleep(2)
             
-            # 크롤링 시작
             logger.debug("Starting Ably crawling", 
                         user_id=token['ably_user_id'])
             
@@ -224,7 +211,6 @@ def extract_single_ably(token):
                 token['ably_pw']
             )
             
-            # 결과 로깅
             logger.info("Ably extraction completed", 
                        user_id=token['ably_user_id'],
                        username=token['username'],
@@ -247,9 +233,9 @@ def extract_single_ably(token):
             return None
 
 @log_performance
-def extract_ably_data(**context):
+def extract_ably_data(ti, **context):
     """에이블리 데이터 추출 (병렬 처리)"""
-    tokens_info = context['task_instance'].xcom_pull(task_ids='get_tokens')
+    tokens_info = ti.xcom_pull(task_ids='get_tokens')
     ably_tokens = tokens_info['ably_tokens']
     
     if not ably_tokens:
@@ -300,11 +286,9 @@ def extract_single_cafe24(token):
                        mall_id=token['mall_id'],
                        username=token['username'])
             
-            # API 호출 전 대기
             logger.debug("Waiting before API call", wait_seconds=1)
             time.sleep(1)
             
-            # API 호출 시작
             logger.debug("Starting Cafe24 API call", 
                         mall_id=token['mall_id'])
             
@@ -318,7 +302,6 @@ def extract_single_cafe24(token):
                 token['redirect_uri']
             )
             
-            # 결과 로깅
             logger.info("Cafe24 extraction completed", 
                        user_id=token['cafe24_user_id'],
                        mall_id=token['mall_id'],
@@ -346,9 +329,9 @@ def extract_single_cafe24(token):
             return None
 
 @log_performance
-def extract_cafe24_data(**context):
+def extract_cafe24_data(ti, **context):
     """카페24 데이터 추출 (병렬 처리)"""
-    tokens_info = context['task_instance'].xcom_pull(task_ids='get_tokens')
+    tokens_info = ti.xcom_pull(task_ids='get_tokens')
     cafe24_tokens = tokens_info['cafe24_tokens']
     
     if not cafe24_tokens:
@@ -391,9 +374,9 @@ def extract_cafe24_data(**context):
     return extracted_data
 
 @log_performance
-def transform_ably_data(**context):
+def transform_ably_data(ti, **context):
     """에이블리 데이터 변환"""
-    raw_data = context['task_instance'].xcom_pull(task_ids='extract_ably')
+    raw_data = ti.xcom_pull(task_ids='extract_ably')
     
     logger.info("Starting Ably data transformation", 
                data_count=len(raw_data))
@@ -410,7 +393,6 @@ def transform_ably_data(**context):
             sales_df = item['sales_data']
             product_df = item['product_data']
             
-            # user_id 컬럼 추가
             sales_df['user_id'] = item['user_id']
             product_df['user_id'] = item['user_id']
             
@@ -442,9 +424,9 @@ def transform_ably_data(**context):
     return transformed_data
 
 @log_performance
-def transform_cafe24_data(**context):
+def transform_cafe24_data(ti, **context):
     """카페24 데이터 변환"""
-    raw_data = context['task_instance'].xcom_pull(task_ids='extract_cafe24')
+    raw_data = ti.xcom_pull(task_ids='extract_cafe24')
     
     logger.info("Starting Cafe24 data transformation", 
                data_count=len(raw_data))
@@ -458,7 +440,6 @@ def transform_cafe24_data(**context):
                         index=idx,
                         mall_id=item['mall_id'])
             
-            # 각 데이터프레임에 메타데이터 추가
             for df_name, df in [
                 ('category', item['category_data']),
                 ('product', item['product_data']),
@@ -490,9 +471,9 @@ def transform_cafe24_data(**context):
     return transformed_data
 
 @log_performance
-def load_ably_data(**context):
+def load_ably_data(ti, **context):
     """에이블리 데이터 로드"""
-    transformed_data = context['task_instance'].xcom_pull(task_ids='transform_ably')
+    transformed_data = ti.xcom_pull(task_ids='transform_ably')
     
     logger.info("Starting Ably data loading", 
                data_count=len(transformed_data))
@@ -509,7 +490,6 @@ def load_ably_data(**context):
                         user_id=user_id,
                         username=username)
             
-            # 기존 데이터 삭제
             deleted_products = AblyProductInfo.objects.filter(user_id=user_id).delete()
             deleted_sales = AblySalesInfo.objects.filter(user_id=user_id).delete()
             
@@ -518,10 +498,8 @@ def load_ably_data(**context):
                         deleted_products=deleted_products[0],
                         deleted_sales=deleted_sales[0])
             
-            # User 객체 가져오기
             user = User.objects.get(id=user_id)
             
-            # 상품 정보 저장
             product_count = 0
             for _, row in item['product_data'].iterrows():
                 row_dict = row.to_dict()
@@ -531,7 +509,6 @@ def load_ably_data(**context):
                 AblyProductInfo.objects.create(user=user, **row_dict)
                 product_count += 1
             
-            # 판매 정보 저장
             sales_count = 0
             for _, row in item['sales_data'].iterrows():
                 row_dict = row.to_dict()
@@ -566,9 +543,9 @@ def load_ably_data(**context):
                failed=failed_loads)
 
 @log_performance
-def load_cafe24_data(**context):
+def load_cafe24_data(ti, **context):
     """카페24 데이터 로드"""
-    transformed_data = context['task_instance'].xcom_pull(task_ids='transform_cafe24')
+    transformed_data = ti.xcom_pull(task_ids='transform_cafe24')
     
     logger.info("Starting Cafe24 data loading", 
                data_count=len(transformed_data))
@@ -585,7 +562,6 @@ def load_cafe24_data(**context):
                         user_id=user_id,
                         mall_id=mall_id)
             
-            # 기존 데이터 삭제
             from don_home.models import Cafe24Category, Cafe24Coupon
             
             deleted_counts = {
@@ -600,13 +576,10 @@ def load_cafe24_data(**context):
                         mall_id=mall_id,
                         **deleted_counts)
             
-            # User 객체 가져오기
             user = User.objects.get(id=user_id)
             
-            # 각 데이터 유형별 저장
             load_counts = {}
             
-            # 카테고리 저장
             for _, row in item['category_data'].iterrows():
                 row_dict = row.to_dict()
                 row_dict.pop('user_id', None)
@@ -614,7 +587,6 @@ def load_cafe24_data(**context):
                 Cafe24Category.objects.create(user_id=user_id, mall_id=mall_id, **row_dict)
             load_counts['categories'] = len(item['category_data'])
             
-            # 상품 저장
             for _, row in item['product_data'].iterrows():
                 row_dict = row.to_dict()
                 row_dict.pop('user_id', None)
@@ -622,7 +594,6 @@ def load_cafe24_data(**context):
                 Cafe24Product.objects.create(user_id=user_id, mall_id=mall_id, **row_dict)
             load_counts['products'] = len(item['product_data'])
             
-            # 주문 저장
             for _, row in item['order_data'].iterrows():
                 row_dict = row.to_dict()
                 row_dict.pop('user_id', None)
@@ -630,7 +601,6 @@ def load_cafe24_data(**context):
                 Cafe24Order.objects.create(user_id=user_id, mall_id=mall_id, **row_dict)
             load_counts['orders'] = len(item['order_data'])
             
-            # 쿠폰 저장
             for _, row in item['coupon_data'].iterrows():
                 row_dict = row.to_dict()
                 row_dict.pop('user_id', None)
@@ -660,13 +630,12 @@ def load_cafe24_data(**context):
                failed=failed_loads)
 
 @log_performance
-def data_quality_check(**context):
+def data_quality_check(ti, **context):
     """데이터 품질 검증"""
     logger.info("Starting data quality check")
     
     from don_home.models import Cafe24Category, Cafe24Coupon
     
-    # 전체 데이터 카운트
     counts = {
         'ably_products': AblyProductInfo.objects.count(),
         'ably_sales': AblySalesInfo.objects.count(),
@@ -678,12 +647,10 @@ def data_quality_check(**context):
     
     logger.info("Data counts retrieved", **counts)
     
-    # 사용자별 데이터 집계
-    tokens_info = context['task_instance'].xcom_pull(task_ids='get_tokens')
+    tokens_info = ti.xcom_pull(task_ids='get_tokens')
     
     user_stats = []
     
-    # Ably 사용자별 통계
     for token in tokens_info['ably_tokens']:
         user_id = token['ably_user_id']
         username = token['username']
@@ -700,7 +667,6 @@ def data_quality_check(**context):
         
         logger.debug("Ably user stats", **stats)
     
-    # Cafe24 사용자별 통계
     for token in tokens_info['cafe24_tokens']:
         user_id = token['cafe24_user_id']
         username = token['username']
@@ -736,7 +702,6 @@ def data_quality_check(**context):
             quality_issues.append(f"No products for Cafe24 mall {stat['mall_id']}")
             logger.warning("No Cafe24 products", user_id=stat['user_id'], mall_id=stat['mall_id'])
     
-    # 최종 결과
     result = {
         'total_counts': counts,
         'user_statistics': user_stats,
@@ -765,52 +730,68 @@ start_task = DummyOperator(
 get_tokens_task = PythonOperator(
     task_id='get_tokens',
     python_callable=get_active_tokens,
+    retries=3,
+    retry_delay=timedelta(minutes=1),
     dag=dag,
 )
 
-# Extract Tasks
 extract_ably_task = PythonOperator(
     task_id='extract_ably',
     python_callable=extract_ably_data,
+    retries=3, 
+    retry_delay=timedelta(minutes=5),
+    retry_exponential_backoff=True,
+    max_retry_delay=timedelta(minutes=30),
     dag=dag,
 )
 
 extract_cafe24_task = PythonOperator(
     task_id='extract_cafe24',
     python_callable=extract_cafe24_data,
+    retries=3, 
+    retry_delay=timedelta(minutes=2),
+    retry_exponential_backoff=True,
+    max_retry_delay=timedelta(minutes=20),
     dag=dag,
 )
 
-# Transform Tasks
 transform_ably_task = PythonOperator(
     task_id='transform_ably',
     python_callable=transform_ably_data,
+    retries=1,  
+    retry_delay=timedelta(minutes=2),
     dag=dag,
 )
 
 transform_cafe24_task = PythonOperator(
     task_id='transform_cafe24',
     python_callable=transform_cafe24_data,
+    retries=1,  
+    retry_delay=timedelta(minutes=2),
     dag=dag,
 )
 
-# Load Tasks
 load_ably_task = PythonOperator(
     task_id='load_ably',
     python_callable=load_ably_data,
+    retries=2,  
+    retry_delay=timedelta(minutes=3),
     dag=dag,
 )
 
 load_cafe24_task = PythonOperator(
     task_id='load_cafe24',
     python_callable=load_cafe24_data,
+    retries=2,  
+    retry_delay=timedelta(minutes=3),
     dag=dag,
 )
 
-# Data Quality Check
 quality_check_task = PythonOperator(
     task_id='data_quality_check',
     python_callable=data_quality_check,
+    retries=1,  
+    retry_delay=timedelta(minutes=1),
     dag=dag,
 )
 
@@ -819,7 +800,6 @@ end_task = DummyOperator(
     dag=dag,
 )
 
-# Task Dependencies
 start_task >> get_tokens_task
 
 get_tokens_task >> [extract_ably_task, extract_cafe24_task]
