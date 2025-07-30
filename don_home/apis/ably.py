@@ -8,6 +8,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 import pyperclip
 import pandas as pd
+import os
 
 def AblyDataInfo(ably_id, ably_pw):
     # Options Setting
@@ -17,9 +18,12 @@ def AblyDataInfo(ably_id, ably_pw):
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--start-maximized')
     options.add_argument('incognito')
-    # options.add_argument('--headless')
-    # Header Setting
-    service = Service(ChromeDriverManager().install())
+    options.add_argument('--headless')
+
+    if os.path.exists('/usr/local/bin/chromedriver'):
+        service = Service('/usr/local/bin/chromedriver')
+    else:
+        service = Service(ChromeDriverManager().install())
     browser = webdriver.Chrome(service=service, options=options)
 
     browser.get("https://my.a-bly.com/sales/order")
@@ -42,12 +46,12 @@ def AblyDataInfo(ably_id, ably_pw):
 
     time.sleep(2)
 
-    pyperclip.copy(ably_id) # Copy - Control + c
-    input_id.send_keys(Keys.CONTROL, "v") # Paste - Control + v
+    pyperclip.copy(ably_id) 
+    input_id.send_keys(Keys.CONTROL, "v")
 
-    pyperclip.copy(ably_pw) # Copy - Control + c
-    input_pw.send_keys(Keys.CONTROL, "v") # Paste - Control + v
-    input_pw.send_keys("\n") # Enter
+    pyperclip.copy(ably_pw)
+    input_pw.send_keys(Keys.CONTROL, "v")
+    input_pw.send_keys("\n")
 
     time.sleep(2.5)
 
