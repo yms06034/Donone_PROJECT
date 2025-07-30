@@ -1,13 +1,14 @@
-import requests
-import json
-import base64
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
-import pandas as pd
 
+import requests
+import json
+import base64
+import pandas as pd
+import numpy as np
 import time
 import pyperclip
 from datetime import datetime, timedelta
@@ -29,7 +30,14 @@ def cafe24_df(admin_id, admin_pw, client_id, client_secret, mall_id, encode_csrf
             options.add_argument('--start-maximized')
             # options.add_argument("headless") # 백그라운드 실행 (만일 창 보이게 하고 싶으면 주석 처리)
 
-            service = Service(ChromeDriverManager().install())
+            # Docker 환경에서는 설치된 ChromeDriver 사용, 로컬에서는 자동 다운로드
+            import os
+            if os.path.exists('/usr/local/bin/chromedriver'):
+                # Docker 환경 - 고정된 버전 사용
+                service = Service('/usr/local/bin/chromedriver')
+            else:
+                # 로컬 개발 환경 - 자동 다운로드
+                service = Service(ChromeDriverManager().install())
             browser = webdriver.Chrome(service=service, options=options)
 
             browser.get(Request_URL)
