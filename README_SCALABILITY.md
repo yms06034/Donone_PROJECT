@@ -3,96 +3,40 @@
 ## 현재 구현 상태
 
 ### 동시 실행 제한
-- **Ably 크롤링**: 최대 10개 동시 실행
+- **Ably 크롤링**: 최대 20개 동시 실행
 - **Cafe24 API**: 최대 20개 동시 실행
 
 ### 예상 처리 시간 (100명 기준)
 - **Ably**: 
   - 크롤링 시간: 약 30초/건
-  - 총 시간: (100 / 10) * 30초 = 약 5분
+  - 동시 처리: 20개씩 병렬 실행
+  - 필요한 배치: 100명 ÷ 20 = 5배치
+  - 총 시간: 5배치 × 30초 = **150초 (2분 30초)**
 - **Cafe24**:
   - API 처리 시간: 약 10초/건  
-  - 총 시간: (100 / 20) * 10초 = 약 50초
+  - 동시 처리: 20개씩 병렬 실행
+  - 필요한 배치: 100명 ÷ 20 = 5배치
+  - 총 시간: 5배치 × 10초 = **50초**
 
 ## 대규모 사용자 대응 방안 (미구현)
 
 ### 1. 분산 큐 시스템 도입
-```python
-# Celery + Redis를 사용한 분산 처리 예시
-from celery import Celery
-
-app = Celery('tasks', broker='redis://localhost:6379')
-
-@app.task
-def crawl_ably_async(user_token):
-    # 개별 크롤링 작업
-    pass
-
-# DAG에서 Celery 작업 호출
-for token in ably_tokens:
-    crawl_ably_async.delay(token)
-```
+Celery와 Redis를 활용한 분산 처리 시스템을 구축하여 작업을 여러 워커에 분산시킬 수 있습니다. 각 크롤링/API 작업을 독립적인 태스크로 만들어 큐에 등록하고, 여러 워커가 동시에 처리하도록 구성합니다. 이를 통해 수평적 확장이 가능해지며, 서버를 추가하는 것만으로도 처리 용량을 늘릴 수 있습니다.
 
 ### 2. 사용자별 스케줄링
-```python
-# 사용자를 시간대별로 분산
-def schedule_by_user_group():
-    users = User.objects.all()
-    groups = {
-        '0-6시': users.filter(id__mod=4 == 0),
-        '6-12시': users.filter(id__mod=4 == 1),
-        '12-18시': users.filter(id__mod=4 == 2),
-        '18-24시': users.filter(id__mod=4 == 3),
-    }
-    return groups
-```
+모든 사용자의 데이터를 동시에 수집하는 대신, 사용자를 여러 그룹으로 나누어 시간대별로 분산 처리합니다. 예를 들어, 사용자 ID를 기준으로 4개 그룹으로 나누어 6시간 간격으로 데이터를 수집하면 서버 부하를 분산시킬 수 있습니다. 또한 사용자의 비즈니스 특성(업종, 규모 등)에 따라 최적의 수집 시간대를 다르게 설정할 수도 있습니다.
 
 ### 3. 크롤링 서버 분리
-```yaml
-# docker-compose에 크롤링 전용 서비스 추가
-services:
-  crawler-1:
-    image: crawler:latest
-    environment:
-      - WORKER_ID=1
-      - MAX_CONCURRENT=20
-  
-  crawler-2:
-    image: crawler:latest
-    environment:
-      - WORKER_ID=2
-      - MAX_CONCURRENT=20
-```
+현재는 Airflow 서버에서 직접 크롤링을 수행하지만, 전용 크롤링 서버를 별도로 구성하여 부하를 분산시킬 수 있습니다. Docker Swarm이나 Kubernetes를 활용하면 크롤링 서버를 동적으로 확장/축소할 수 있으며, 각 서버는 독립적으로 Chrome 인스턴스를 관리하여 안정성을 높일 수 있습니다.
 
-### 4. 우선순위 큐
-```python
-# 유료/무료 사용자 구분
-class CrawlingPriority:
-    HIGH = 1    # 유료 사용자
-    MEDIUM = 2  # 활성 무료 사용자
-    LOW = 3     # 비활성 사용자
+### 4. 우선순위 큐 시스템
+유료 사용자와 무료 사용자를 구분하여 처리 우선순위를 다르게 설정할 수 있습니다. 유료 사용자의 작업은 높은 우선순위 큐에, 무료 사용자는 낮은 우선순위 큐에 배치하여 서비스 품질을 차별화합니다. 또한 데이터 수집 빈도나 실패 시 재시도 횟수도 등급별로 다르게 설정할 수 있습니다.
 
-def get_user_priority(user):
-    if user.subscription == 'premium':
-        return CrawlingPriority.HIGH
-    elif user.last_login > datetime.now() - timedelta(days=7):
-        return CrawlingPriority.MEDIUM
-    return CrawlingPriority.LOW
-```
+### 5. 캐싱 전략
+자주 변경되지 않는 데이터(카테고리, 상품 기본 정보 등)는 Redis나 Memcached를 활용하여 캐싱합니다. 이를 통해 불필요한 크롤링/API 호출을 줄이고 전체적인 처리 속도를 향상시킬 수 있습니다. 캐시 TTL은 데이터 특성에 따라 다르게 설정하여 최적화합니다.
 
-### 5. 실시간 모니터링
-```python
-# Prometheus + Grafana 연동
-from prometheus_client import Counter, Histogram
-
-crawling_counter = Counter('crawling_total', 'Total crawling attempts')
-crawling_duration = Histogram('crawling_duration_seconds', 'Crawling duration')
-
-@crawling_duration.time()
-def monitored_crawling(token):
-    crawling_counter.inc()
-    return extract_single_ably(token)
-```
+### 6. 모니터링 및 알림 시스템
+Prometheus와 Grafana를 활용하여 실시간 모니터링 대시보드를 구축하고, 크롤링 성공률, 처리 시간, 에러율 등을 추적합니다. 임계값을 초과하면 Slack이나 이메일로 자동 알림을 발송하여 신속한 대응이 가능하도록 합니다.
 
 ## 권장 아키텍처 (1000+ 사용자)
 
@@ -116,10 +60,6 @@ def monitored_crawling(token):
 3. **IP 차단**: 동일 IP에서 대량 크롤링 시 차단 위험
 4. **데이터베이스 병목**: 동시 쓰기 작업 시 락 발생 가능
 
-## 임시 해결 방안
+## 결론
 
-사용자가 급증할 경우:
-1. DAG 실행 주기를 여러 시간대로 분산
-2. 동시 실행 수를 서버 상황에 맞게 조절
-3. 크롤링 간격을 늘려 안정성 확보
-4. 중요 사용자 우선 처리
+현재 구현은 소규모(~100명) 사용자에게 적합하며, 대규모 사용자를 지원하려면 위에서 제안한 분산 처리 시스템, 캐싱, 모니터링 등의 고급 기능 구현이 필요합니다.

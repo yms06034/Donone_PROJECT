@@ -10,6 +10,7 @@
     {% load sass_tags %}
     <link href="{% sass_src 'css/main.scss' %}" rel="stylesheet" type="text/css" />
     <link href="{% sass_src 'css/register.scss' %}" rel="stylesheet" type="text/css" />
+    <script src="{% static 'js/common.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -57,80 +58,130 @@
         <input class="id_forminput_tn top" placeholder="비밀번호 확인" name="password2" required type="password" value="">
       </div>
 
-      <input class="submit_signup" type="submit" id="join-submit" id_check_result="fail" value="가입하기">
+      <input class="submit_signup" type="button" id="join-submit" id_check_result="fail" value="가입하기">
       </form>
     </div>
   </div>
 </div>
 
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src='//code.jquery.com/ui/1.11.4/jquery-ui.js'></script>
 <script>
-	/* 중복체크! */
-	$(function(){
-		/* 아이디 수정했을 때 */
-		// $('#email').change(function () {
-		// 	$('#img-email').hide();
-		// 	$('#btn-email').show();
-		// });
-
-		$('#btn-username').click(function(){
-			let username = $('#username').val()
-			if(username == ''){
-				alert('아이디를 입력해주세요.')
-				return;
-			}
-
-			$.ajax({
-				url:'/api/checkeusername?username='+username,
-				type:'get',
-				dataType:'json',
-				success:function(response){
-					if(response.result != 'success'){
-						console.error(response.data)
-						return;
-					}
-					if(response.data == 'exist'){
-						alert("이미 존재하는 ID 입니다.");
-						$('#username').val('').focus();
-						return;
-					}else{
-						$('#img-username').show();
-						$('#btn-username').hide();
-						$("#join-submit").attr("id_check_result", "success");
-						return;
-					}
-					// console.log(response)
-				},
-                error : function(xhr, error){
-					alert("서버와의 통신에서 문제가 발생했습니다.");
-					console.error("error : " + error);
-				}
-			})
-		});
-
-    $('#join-form').submit(function() {
-		   if($("input:checkbox[id='agree-prov']").is(":checked") == false) {
-		      alert("약관동의를 확인하여 주시기 바랍니다.");
-		      return false;
-		   }
-
-		   console.log($("#join-submit").attr("id_check_result"));
-
-		   if($("#join-submit").attr("id_check_result") == "fail") {
-		      alert("id 중복체크를 해주시기 바랍니다.");
-		      $("#email").focus();
-		      return false;
-		   }
-		});
-
-		$("#email").on("propertychange change keyup paste input", function(){
-		   $('#img-email').hide();
-		   $('#btn-email').show();
-		   $("#join-submit").attr("id_check_result", "fail");
-		});
-	});
+document.addEventListener('DOMContentLoaded', function() {
+    const btnUsername = document.getElementById('btn-username');
+    const joinSubmit = document.getElementById('join-submit');
+    const usernameInput = document.getElementById('username');
+    const emailInput = document.getElementById('email');
+    const form = document.querySelector('form');
+    
+    btnUsername.addEventListener('click', async function() {
+        const username = usernameInput.value.trim();
+        
+        if (!username) {
+            notify.warning('아이디를 입력해주세요.');
+            return;
+        }
+        
+        loader.show();
+        
+        try {
+            const response = await api.get('/api/ajax/check_username/', { username: username });
+            
+            if (response.result !== 'success') {
+                console.error(response.data);
+                notify.error('오류가 발생했습니다.');
+                return;
+            }
+            
+            if (response.data === 'exist') {
+                notify.error('이미 존재하는 ID 입니다.');
+                usernameInput.value = '';
+                usernameInput.focus();
+            } else {
+                notify.success('사용 가능한 ID 입니다.');
+                btnUsername.style.display = 'none';
+                joinSubmit.setAttribute('id_check_result', 'success');
+                
+                const checkIcon = document.createElement('span');
+                checkIcon.innerHTML = ' ✓';
+                checkIcon.style.color = 'green';
+                btnUsername.parentNode.appendChild(checkIcon);
+            }
+        } catch (error) {
+            notify.error('서버와의 통신에서 문제가 발생했습니다.');
+            console.error('Error:', error);
+        } finally {
+            loader.hide();
+        }
+    });
+    
+    joinSubmit.addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        if (joinSubmit.getAttribute('id_check_result') === 'fail') {
+            notify.warning('ID 중복체크를 해주시기 바랍니다.');
+            usernameInput.focus();
+            return;
+        }
+        
+        const formData = new FormData(form);
+        const username = formData.get('username');
+        const email = formData.get('email');
+        const fullname = formData.get('fullname');
+        const password1 = formData.get('password1');
+        const password2 = formData.get('password2');
+        
+        if (!validator.required(username) || !validator.required(email) || 
+            !validator.required(fullname) || !validator.required(password1) || 
+            !validator.required(password2)) {
+            notify.error('모든 필수 항목을 입력해주세요.');
+            return;
+        }
+        
+        if (!validator.email(email)) {
+            notify.error('올바른 이메일 형식이 아닙니다.');
+            return;
+        }
+        
+        if (!validator.password(password1)) {
+            notify.error('비밀번호는 영문, 숫자, 특수문자 중 2종류 이상을 포함하여 8자 이상이어야 합니다.');
+            return;
+        }
+        
+        if (password1 !== password2) {
+            notify.error('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+        
+        loader.show();
+        
+        try {
+            const response = await api.postForm('/api/ajax/signup/', formData);
+            
+            if (response.status === 'success') {
+                notify.success('회원가입이 완료되었습니다.');
+                setTimeout(() => {
+                    window.location.href = '/login/';
+                }, 1500);
+            } else {
+                notify.error(response.message || '회원가입에 실패했습니다.');
+            }
+        } catch (error) {
+            notify.error('서버 오류가 발생했습니다.');
+            console.error('Error:', error);
+        } finally {
+            loader.hide();
+        }
+    });
+    
+    usernameInput.addEventListener('input', function() {
+        const checkIcon = btnUsername.parentNode.querySelector('span');
+        if (checkIcon) {
+            checkIcon.remove();
+        }
+        btnUsername.style.display = 'inline-block';
+        joinSubmit.setAttribute('id_check_result', 'fail');
+    });
+});
 </script>
 
 {% endblock %}

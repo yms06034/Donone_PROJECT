@@ -1,8 +1,3 @@
-"""
-Airflow Local Settings
-MySQL 연결 설정을 Django settings와 동일하게 구성
-"""
-
 from airflow.models import Connection
 from airflow import settings
 import os
@@ -38,6 +33,5 @@ def create_mysql_connection():
     
     print(f"MySQL connection 'donone_mysql' created successfully")
 
-# Airflow 시작 시 연결 생성
 if __name__ == "__main__":
     create_mysql_connection()

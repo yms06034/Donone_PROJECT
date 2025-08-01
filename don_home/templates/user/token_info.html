@@ -1,16 +1,126 @@
-<form method="POST">
-    {% csrf_token %}
-    <button class="btn btn-primary btn-block" name="ablycrawling">데이터 가져오기</button>
-</form>
+{% extends "layout.html" %}
 
-{% if ably_data %}
-    {% for da in ably_data %}
-    <p>{{ da.orderName }}</p>
-    {% endfor %}
-{% else %}
-<p>현재 데이터가 없습니다</p>
-{% endif %}
+{% block title %}
+토큰 정보
+{% endblock %}
 
+{% block head %}
+  {{ block.super }}
+  {% load static %}
+  <script src="{% static 'js/common.js' %}"></script>
+{% endblock %}
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<script src='//code.jquery.com/ui/1.11.4/jquery-ui.js'></script>
+{% block body %}
+  {{ block.super }}
+  
+  <div class="container mt-4">
+    <h2>데이터 관리</h2>
+    
+    <div class="mb-4">
+      <button class="btn btn-primary" id="fetch-data-btn">데이터 가져오기</button>
+      <button class="btn btn-info ml-2" id="refresh-data-btn" style="display: none;">새로고침</button>
+    </div>
+    
+    <div id="data-container">
+      <div id="loading-message" style="display: none;">
+        <p>데이터를 불러오는 중입니다...</p>
+      </div>
+      
+      <div id="ably-data-section" style="display: none;">
+        <h3>Ably 데이터</h3>
+        <div id="ably-data-list"></div>
+      </div>
+      
+      <div id="no-data-message" style="display: none;">
+        <p>현재 데이터가 없습니다</p>
+      </div>
+    </div>
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fetchDataBtn = document.getElementById('fetch-data-btn');
+    const refreshDataBtn = document.getElementById('refresh-data-btn');
+    const dataContainer = document.getElementById('data-container');
+    const loadingMessage = document.getElementById('loading-message');
+    const ablyDataSection = document.getElementById('ably-data-section');
+    const ablyDataList = document.getElementById('ably-data-list');
+    const noDataMessage = document.getElementById('no-data-message');
+    
+    // 데이터 가져오기 함수
+    async function fetchAblyData() {
+        loadingMessage.style.display = 'block';
+        noDataMessage.style.display = 'none';
+        ablyDataSection.style.display = 'none';
+        
+        try {
+            const response = await api.post('/api/ajax/token_info/', { action: 'ablycrawling' });
+            
+            if (response.status === 'success') {
+                notify.success('데이터를 성공적으로 가져왔습니다.');
+                
+                if (response.ably_data && response.ably_data.length > 0) {
+                    displayAblyData(response.ably_data);
+                    refreshDataBtn.style.display = 'inline-block';
+                } else {
+                    noDataMessage.style.display = 'block';
+                }
+            } else {
+                notify.error(response.message || '데이터를 가져오는데 실패했습니다.');
+                noDataMessage.style.display = 'block';
+            }
+        } catch (error) {
+            notify.error('서버 오류가 발생했습니다.');
+            console.error('Error:', error);
+            noDataMessage.style.display = 'block';
+        } finally {
+            loadingMessage.style.display = 'none';
+        }
+    }
+    
+    // Ably 데이터 표시 함수
+    function displayAblyData(data) {
+        ablyDataSection.style.display = 'block';
+        
+        let html = '<div class="list-group">';
+        data.forEach(item => {
+            html += `
+                <div class="list-group-item">
+                    <h5 class="mb-1">${item.orderName || '주문명 없음'}</h5>
+                    <p class="mb-1">주문번호: ${item.orderNumber || '-'}</p>
+                    <small>상태: ${item.status || '-'}</small>
+                </div>
+            `;
+        });
+        html += '</div>';
+        
+        ablyDataList.innerHTML = html;
+    }
+    
+    // 페이지 로드 시 데이터 조회
+    async function loadInitialData() {
+        try {
+            const response = await api.get('/api/ajax/token_info/');
+            
+            if (response.ably_data && response.ably_data.length > 0) {
+                displayAblyData(response.ably_data);
+                refreshDataBtn.style.display = 'inline-block';
+            } else {
+                noDataMessage.style.display = 'block';
+            }
+        } catch (error) {
+            console.log('초기 데이터가 없습니다.');
+            noDataMessage.style.display = 'block';
+        }
+    }
+    
+    // 이벤트 리스너
+    fetchDataBtn.addEventListener('click', fetchAblyData);
+    refreshDataBtn.addEventListener('click', fetchAblyData);
+    
+    // 페이지 로드 시 초기 데이터 로드
+    loadInitialData();
+});
+</script>
+
+{% endblock %}

@@ -7,7 +7,9 @@ Dashboard
 {% block head %}
   {{ block.super }}
   {% load sass_tags %}
+  {% load static %}
   <link href="{% sass_src 'css/dashboard.scss' %}" rel="stylesheet" type="text/css" />
+  <script src="{% static 'js/common.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -23,7 +25,7 @@ Dashboard
       <div class="category_area">
         <div class="logo_title">
           <div class="top_flex">
-            <img class="h-log_logo" src="data:image/jpeg;base64,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" alt="h-log logo">
+            <img class="h-log_logo" src="data:image/jpeg;base64,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" alt="h-log logo">
             <span class="first_title">플랫폼 별 판매 현황</span>
           </div>
           <p class="dash">__________________</p>
@@ -35,31 +37,31 @@ Dashboard
         </div>
         <div class="total_sales_area">
           <span class="ts_item">￦ </span>
-          <span id="ts_money" class="ts_money"> {{ total }}</span>
+          <span id="ts_money" class="ts_money">0</span>
         </div>
         <div class="platform_area">
           <div class="platform_btn">
-            <button id="total_btn" class="bbtn activate">
+            <button id="total_btn" class="bbtn activate" data-platform="total">
               <span class="platform_name">전체</span>
-              <span class="platform_name">￦ {{ total }}</span>
+              <span class="platform_name">￦ <span id="total_amount">0</span></span>
             </button>
           </div>
           <div class="platform_btn">
-            <button id="ably_btn" class="bbtn">
+            <button id="ably_btn" class="bbtn" data-platform="ably">
               <span class="platform_name">에이블리</span>
-              <span class="platform_name">￦ {{ ably_plat }}</span>
+              <span class="platform_name">￦ <span id="ably_amount">0</span></span>
             </button>
           </div>
           <div class="platform_btn">
-            <button id="cafe24_btn" class="bbtn">
+            <button id="cafe24_btn" class="bbtn" data-platform="cafe24">
               <span class="platform_name">카페24</span>
-              <span class="platform_name">￦ {{ cafe_plat }}</span>
+              <span class="platform_name">￦ <span id="cafe24_amount">0</span></span>
             </button>
           </div>
           <div class="platform_btn">
-            <button id="naver_btn" class="bbtn">
+            <button id="naver_btn" class="bbtn" data-platform="naver">
               <span class="platform_name">스마트스토어</span>
-              <span class="platform_name">￦ {{ naver_plat }}</span>
+              <span class="platform_name">￦ <span id="naver_amount">0</span></span>
             </button>
           </div>
         </div>
@@ -71,7 +73,7 @@ Dashboard
         <span>TOTAL OVERVIEW</span>
         <div class="top_date">
           <span class="now_date"></span>
-          <form action="" method="get" id="form">
+          <form id="form">
             <select class="select_box" name="order_date" id="select_box">
               <option value="">조회 선택</option>
               <option value="odyear">1년</option>
@@ -92,7 +94,7 @@ Dashboard
             </div>
             <div class="dash_total_content">
               <span class="dahs_tosales_w">￦</span>
-              <span class="dahs_tosales">{{ total }}</span>
+              <span class="dahs_tosales" id="total_sales">0</span>
             </div>
           </div>
           <div class="dash_total_sales">
@@ -101,7 +103,7 @@ Dashboard
               <img class="img" src="https://i.ibb.co/N7srhyL/box.png" alt="">
             </div>
             <div class="dash_total_content">
-              <span class="dahs_tosales">{{ total_order }}</span>
+              <span class="dahs_tosales" id="total_orders">0</span>
             </div>
           </div>
           <div class="dash_total_sales">
@@ -110,11 +112,11 @@ Dashboard
               <img class="img" src="https://i.ibb.co/kH5TBFZ/box2.png" alt="">
             </div>
             <div class="dash_total_content">
-              <span class="dahs_tosales">{{ total_re }}</span>
+              <span class="dahs_tosales" id="total_returns">0</span>
             </div>
           </div>
         </div>
-        <!-- Chaert -->
+        <!-- Chart -->
         <div class="chart_area">
           <div class="chart_item">
             <div class="chart_content">
@@ -158,20 +160,7 @@ Dashboard
                     <col style="width: 5%">
                     <col style="width: 5%">
                   </colgroup>
-                  <tbody>
-                    {% for t in td %}
-                    <tr>
-                      <td>{{ t.Platform }}</td>
-                      <td>{{ t.주문번호 }}</td>
-                      <td>{{ t.Status }}</td>
-                      <td>{{ t.주문일자 }}</td>
-                      <td style="text-align: center !important;">{{ t.고객명 }}</td>
-                      <td>{{ t.상품명 }}</td>
-                      <td>{{ t.수량 }}</td>
-                      <td>{{ t.판매가 }}</td>
-                      <td>{{ t.Profit }}</td>
-                    </tr>
-                    {% endfor %}
+                  <tbody id="total_table_body">
                   </tbody>
                 </table>
               </div>
@@ -190,7 +179,7 @@ Dashboard
             </div>
             <div class="dash_total_content">
               <span class="dahs_tosales_w">￦</span>
-              <span class="dahs_tosales">{{ ably_plat }}</span>
+              <span class="dahs_tosales" id="ably_sales">0</span>
             </div>
           </div>
           <div class="dash_total_sales">
@@ -199,7 +188,7 @@ Dashboard
               <img class="img" src="https://i.ibb.co/N7srhyL/box.png" alt="">
             </div>
             <div class="dash_total_content">
-              <span class="dahs_tosales">{{ ably_order }}</span>
+              <span class="dahs_tosales" id="ably_orders">0</span>
             </div>
           </div>
           <div class="dash_total_sales">
@@ -208,11 +197,11 @@ Dashboard
               <img class="img" src="https://i.ibb.co/kH5TBFZ/box2.png" alt="">
             </div>
             <div class="dash_total_content">
-              <span class="dahs_tosales">{{ ably_re }}</span>
+              <span class="dahs_tosales" id="ably_returns">0</span>
             </div>
           </div>
         </div>
-        <!-- Chaert -->
+        <!-- Chart -->
         <div class="chart_area">
           <div class="chart_item">
             <div class="chart_content">
@@ -256,20 +245,7 @@ Dashboard
                     <col style="width: 5%">
                     <col style="width: 5%">
                   </colgroup>
-                  <tbody>
-                    {% for a in ab %}
-                    <tr>
-                      <td>{{ a.Platform }}</td>
-                      <td>{{ a.주문번호 }}</td>
-                      <td>{{ a.Status }}</td>
-                      <td>{{ a.주문일자 }}</td>
-                      <td style="text-align: center !important;">{{ a.고객명 }}</td>
-                      <td>{{ a.상품명 }}</td>
-                      <td>{{ a.수량 }}</td>
-                      <td>{{ a.판매가 }}</td>
-                      <td>{{ a.Profit }}</td>
-                    </tr>
-                    {% endfor %}
+                  <tbody id="ably_table_body">
                   </tbody>
                 </table>
               </div>
@@ -288,7 +264,7 @@ Dashboard
             </div>
             <div class="dash_total_content">
               <span class="dahs_tosales_w">￦</span>
-              <span class="dahs_tosales">{{ cafe_plat }}</span>
+              <span class="dahs_tosales" id="cafe24_sales">0</span>
             </div>
           </div>
           <div class="dash_total_sales">
@@ -297,7 +273,7 @@ Dashboard
               <img class="img" src="https://i.ibb.co/N7srhyL/box.png" alt="">
             </div>
             <div class="dash_total_content">
-              <span class="dahs_tosales">{{ cafe_order }}</span>
+              <span class="dahs_tosales" id="cafe24_orders">0</span>
             </div>
           </div>
           <div class="dash_total_sales">
@@ -306,11 +282,11 @@ Dashboard
               <img class="img" src="https://i.ibb.co/kH5TBFZ/box2.png" alt="">
             </div>
             <div class="dash_total_content">
-              <span class="dahs_tosales">{{ cafe_re }}</span>
+              <span class="dahs_tosales" id="cafe24_returns">0</span>
             </div>
           </div>
         </div>
-        <!-- Chaert -->
+        <!-- Chart -->
         <div class="chart_area">
           <div class="chart_item">
             <div class="chart_content">
@@ -354,20 +330,7 @@ Dashboard
                     <col style="width: 5%">
                     <col style="width: 5%">
                   </colgroup>
-                  <tbody>
-                    {% for c in cf %}
-                    <tr>
-                      <td>{{ c.Platform }}</td>
-                      <td>{{ c.주문번호 }}</td>
-                      <td>{{ c.Status }}</td>
-                      <td>{{ c.주문일자 }}</td>
-                      <td style="text-align: center !important;">{{ c.고객명 }}</td>
-                      <td>{{ c.상품명 }}</td>
-                      <td>{{ c.수량 }}</td>
-                      <td>{{ c.판매가 }}</td>
-                      <td>{{ c.Profit }}</td>
-                    </tr>
-                    {% endfor %}
+                  <tbody id="cafe24_table_body">
                   </tbody>
                 </table>
               </div>
@@ -386,7 +349,7 @@ Dashboard
             </div>
             <div class="dash_total_content">
               <span class="dahs_tosales_w">￦</span>
-              <span class="dahs_tosales">{{ naver_plat }}</span>
+              <span class="dahs_tosales" id="naver_sales">0</span>
             </div>
           </div>
           <div class="dash_total_sales">
@@ -395,7 +358,7 @@ Dashboard
               <img class="img" src="https://i.ibb.co/N7srhyL/box.png" alt="">
             </div>
             <div class="dash_total_content">
-              <span class="dahs_tosales">{{ naver_order }}</span>
+              <span class="dahs_tosales" id="naver_orders">0</span>
             </div>
           </div>
           <div class="dash_total_sales">
@@ -404,11 +367,11 @@ Dashboard
               <img class="img" src="https://i.ibb.co/kH5TBFZ/box2.png" alt="">
             </div>
             <div class="dash_total_content">
-              <span class="dahs_tosales">{{ naver_re }}</span>
+              <span class="dahs_tosales" id="naver_returns">0</span>
             </div>
           </div>
         </div>
-        <!-- Chaert -->
+        <!-- Chart -->
         <div class="chart_area">
           <div class="chart_item">
             <div class="chart_content">
@@ -452,20 +415,7 @@ Dashboard
                     <col style="width: 5%">
                     <col style="width: 5%">
                   </colgroup>
-                  <tbody>
-                    {% for n in na %}
-                    <tr>
-                      <td>{{ n.Platform }}</td>
-                      <td>{{ n.주문번호 }}</td>
-                      <td>{{ n.Status }}</td>
-                      <td>{{ n.주문일자 }}</td>
-                      <td style="text-align: center !important;">{{ n.고객명 }}</td>
-                      <td>{{ n.상품명 }}</td>
-                      <td>{{ n.수량 }}</td>
-                      <td>{{ n.판매가 }}</td>
-                      <td>{{ n.Profit }}</td>
-                    </tr>
-                    {% endfor %}
+                  <tbody id="naver_table_body">
                   </tbody>
                 </table>
               </div>
@@ -479,294 +429,282 @@ Dashboard
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
-  const ably_btn = document.getElementById('ably_btn');
-  const cafe24_btn = document.getElementById('cafe24_btn');
-  const naver_btn = document.getElementById('naver_btn');
-  const total_btn = document.getElementById('total_btn');
-
-  const ably_dash = document.getElementById('ably_dash');
-  const cafe24_dash = document.getElementById('cafe24_dash');
-  const naver_dash = document.getElementById('naver_dash');
-  const total_dash = document.getElementById('total_dash');
-
-  const now_date = document.getElementsByClassName('now_date')
-
-  let month = document.getElementById("month");
-  let year = document.getElementById("year");
-
-  $(ably_btn).click(function() {
-    $(ably_btn).addClass('activate');
-    $(cafe24_btn).removeClass('activate');
-    $(naver_btn).removeClass('activate');
-    $(total_btn).removeClass('activate');
-
-    $(ably_dash).removeClass('display_none');
-    $(cafe24_dash).addClass('display_none');
-    $(naver_dash).addClass('display_none');
-    $(total_dash).addClass('display_none');
-  });
-
-  $(cafe24_btn).click(function() {
-    $(cafe24_btn).addClass('activate');
-    $(ably_btn).removeClass('activate');
-    $(naver_btn).removeClass('activate');
-    $(total_btn).removeClass('activate');
-
-    $(ably_dash).addClass('display_none');
-    $(cafe24_dash).removeClass('display_none');
-    $(naver_dash).addClass('display_none');
-    $(total_dash).addClass('display_none');
-  });
-
-  $(naver_btn).click(function() {
-    $(naver_btn).addClass('activate');
-    $(ably_btn).removeClass('activate');
-    $(cafe24_btn).removeClass('activate');
-    $(total_btn).removeClass('activate');
-
-    $(ably_dash).addClass('display_none');
-    $(cafe24_dash).addClass('display_none');
-    $(naver_dash).removeClass('display_none');
-    $(total_dash).addClass('display_none');
-  });
-
-  $(total_btn).click(function() {
-    $(total_btn).addClass('activate');
-    $(ably_btn).removeClass('activate');
-    $(cafe24_btn).removeClass('activate');
-    $(naver_btn).removeClass('activate');
-
-    $(ably_dash).addClass('display_none');
-    $(cafe24_dash).addClass('display_none');
-    $(naver_dash).addClass('display_none');
-    $(total_dash).removeClass('display_none');
-  });
-
-  function dayinfo() {
-    const dateObj = new Date();
-    const yearInfo = dateObj.getFullYear();
-    const monthNameLong = dateObj.toLocaleString("en-US", { month: "long" });
-
-    month.innerText = `(${monthNameLong}`;
-    year.innerText = `${yearInfo})`;
-  }
-  dayinfo();
-
-  $(document).ready(function() {
-        $( "select[name=order_date]" ).val( "{{ order_date_text }}" );
-        $('select[name=order_date]').change(function () {
-        $(now_date).innerText = $('select[name=order_date]').val();
-        month = $('select[name=order_date]').val();
-        $('#form').submit();
-      });
-  });
-
-// Chart
-const dateChart = new Date();
-const lastYear = dateChart.getFullYear() - 1;
-const nowYear = dateChart.getFullYear();
-const lastMonth = dateChart.getMonth() + 1;
-
-const fnll_date = `${lastYear}-${lastMonth} ~ ${nowYear}-${lastMonth}`
-console.log(fnll_date);
-
-
-
-const toctx = document.getElementById('to_barChart');
-const abctx = document.getElementById('ab_barChart');
-const cfctx = document.getElementById('cf_barChart');
-const nactx = document.getElementById('na_barChart');
-
-const p_toctx = document.getElementById('to_pieChart');
-const a_toctx = document.getElementById('ab_pieChart');
-const b_toctx = document.getElementById('cf_pieChart');
-const c_toctx = document.getElementById('na_pieChart');
-
-
-const to_year = {{ to_mon | safe }};
-const to_year_data = {{ to_data | safe }};
-const ab_year = {{ ab_mon | safe }};
-const ab_year_data = {{ ab_data | safe }};
-const cf_year = {{ cf_mon | safe }};
-const cf_year_data = {{ cf_data | safe }};
-const na_year = {{ na_mon | safe }};
-const na_year_data = {{ na_data | safe }};
-
-const t_pn = {{ tpn | safe }};
-const t_pt = {{ tpt | safe }};
-const a_pn = {{ apn | safe }};
-const a_pt = {{ apt | safe }};
-const c_pn = {{ cpn | safe }};
-const c_pt = {{ cpt | safe }};
-const n_pn = {{ npn | safe }};
-const n_pt = {{ npt | safe }};
-
-console.log(to_year);
-
-
-new Chart(toctx, {
-  type: 'bar',
-  data: {
-    labels: to_year,
-    datasets: [{
-      label: fnll_date + `  (단위 : month)`,
-      data: to_year_data,
-      borderWidth: 1
-    }]
-  },
-  options: {
-    scales: {
-      y: {
-        // beginAtZero: true
-      }
+document.addEventListener('DOMContentLoaded', function() {
+    let currentPlatform = 'total';
+    let dashboardData = null;
+    let charts = {};
+    
+    const platformButtons = {
+        total: document.getElementById('total_btn'),
+        ably: document.getElementById('ably_btn'),
+        cafe24: document.getElementById('cafe24_btn'),
+        naver: document.getElementById('naver_btn')
+    };
+    
+    const dashboardAreas = {
+        total: document.getElementById('total_dash'),
+        ably: document.getElementById('ably_dash'),
+        cafe24: document.getElementById('cafe24_dash'),
+        naver: document.getElementById('naver_dash')
+    };
+    
+    const selectBox = document.getElementById('select_box');
+    const monthElement = document.getElementById('month');
+    const yearElement = document.getElementById('year');
+    
+    function displayDateInfo() {
+        const dateObj = new Date();
+        const yearInfo = dateObj.getFullYear();
+        const monthNameLong = dateObj.toLocaleString("en-US", { month: "long" });
+        
+        monthElement.innerText = `(${monthNameLong}`;
+        yearElement.innerText = `${yearInfo})`;
     }
-  }
+    
+    async function loadDashboardData(orderDate = '') {
+        loader.show();
+        
+        try {
+            const params = orderDate ? { order_date: orderDate } : {};
+            const response = await api.get('/api/ajax/dashboard/', params);
+            
+            if (response.status === 'success') {
+                dashboardData = response.data;
+                updateDashboard();
+                notify.success('대시보드 데이터를 성공적으로 로드했습니다.');
+            } else {
+                notify.error(response.message || '데이터를 불러오는데 실패했습니다.');
+            }
+        } catch (error) {
+            notify.error('서버 오류가 발생했습니다.');
+            console.error('Error:', error);
+        } finally {
+            loader.hide();
+        }
+    }
+    
+    function updateDashboard() {
+        if (!dashboardData) return;
+        
+        document.getElementById('ts_money').textContent = formatNumber(dashboardData.total);
+        document.getElementById('total_amount').textContent = formatNumber(dashboardData.total);
+        document.getElementById('ably_amount').textContent = formatNumber(dashboardData.ably_plat);
+        document.getElementById('cafe24_amount').textContent = formatNumber(dashboardData.cafe_plat);
+        document.getElementById('naver_amount').textContent = formatNumber(dashboardData.naver_plat);
+        
+        updatePlatformData(currentPlatform);
+        
+        updateCharts();
+    }
+    
+    function updatePlatformData(platform) {
+        if (!dashboardData) {
+            console.error('dashboardData is not loaded');
+            return;
+        }
+        
+        const salesElement = document.getElementById(`${platform}_sales`);
+        const ordersElement = document.getElementById(`${platform}_orders`);
+        const returnsElement = document.getElementById(`${platform}_returns`);
+        
+        console.log(`Updating platform: ${platform}`);
+        console.log('Elements found:', {
+            sales: salesElement,
+            orders: ordersElement,
+            returns: returnsElement
+        });
+        
+        if (!salesElement || !ordersElement || !returnsElement) {
+            console.error(`Some elements not found for platform: ${platform}`);
+            return;
+        }
+        
+        try {
+            if (platform === 'total') {
+                salesElement.textContent = formatNumber(dashboardData.total);
+                ordersElement.textContent = formatNumber(dashboardData.total_order);
+                returnsElement.textContent = formatNumber(dashboardData.total_re);
+                updateOrderTable('total_table_body', dashboardData.td);
+            } else if (platform === 'ably') {
+                salesElement.textContent = formatNumber(dashboardData.ably_plat);
+                ordersElement.textContent = formatNumber(dashboardData.ably_order);
+                returnsElement.textContent = formatNumber(dashboardData.ably_re);
+                updateOrderTable('ably_table_body', dashboardData.ab);
+            } else if (platform === 'cafe24') {
+                salesElement.textContent = formatNumber(dashboardData.cafe_plat);
+                ordersElement.textContent = formatNumber(dashboardData.cafe_order);
+                returnsElement.textContent = formatNumber(dashboardData.cafe_re);
+                updateOrderTable('cafe24_table_body', dashboardData.cf);
+            } else if (platform === 'naver') {
+                salesElement.textContent = formatNumber(dashboardData.naver_plat);
+                ordersElement.textContent = formatNumber(dashboardData.naver_order);
+                returnsElement.textContent = formatNumber(dashboardData.naver_re);
+                updateOrderTable('naver_table_body', dashboardData.na);
+            }
+        } catch (error) {
+            console.error(`Error updating platform ${platform}:`, error);
+            console.log('Dashboard data:', dashboardData);
+        }
+    }
+    
+    function updateOrderTable(tableId, data) {
+        const tableBody = document.getElementById(tableId);
+        let html = '';
+        
+        if (data && data.length > 0) {
+            data.forEach(item => {
+                html += `
+                    <tr>
+                        <td>${item.Platform || '-'}</td>
+                        <td>${item.주문번호 || '-'}</td>
+                        <td>${item.Status || '-'}</td>
+                        <td>${item.주문일자 || '-'}</td>
+                        <td style="text-align: center !important;">${item.고객명 || '-'}</td>
+                        <td>${item.상품명 || '-'}</td>
+                        <td>${item.수량 || 0}</td>
+                        <td>${item.판매가 || 0}</td>
+                        <td>${item.Profit || 0}</td>
+                    </tr>
+                `;
+            });
+        } else {
+            html = '<tr><td colspan="9" style="text-align: center;">데이터가 없습니다.</td></tr>';
+        }
+        
+        tableBody.innerHTML = html;
+    }
+    
+    function updateCharts() {
+        if (!dashboardData) return;
+        
+        const dateChart = new Date();
+        const lastYear = dateChart.getFullYear() - 1;
+        const nowYear = dateChart.getFullYear();
+        const lastMonth = dateChart.getMonth() + 1;
+        const fnll_date = `${lastYear}-${lastMonth} ~ ${nowYear}-${lastMonth}`;
+        
+        Object.values(charts).forEach(chart => {
+            if (chart) chart.destroy();
+        });
+        
+        charts.to_bar = createBarChart('to_barChart', dashboardData.to_mon, dashboardData.to_data, fnll_date);
+        charts.to_pie = createPieChart('to_pieChart', dashboardData.tpn, dashboardData.tpt);
+        
+        charts.ab_bar = createBarChart('ab_barChart', dashboardData.ab_mon, dashboardData.ab_data, fnll_date);
+        charts.ab_pie = createPieChart('ab_pieChart', dashboardData.apn, dashboardData.apt);
+        
+        charts.cf_bar = createBarChart('cf_barChart', dashboardData.cf_mon, dashboardData.cf_data, fnll_date);
+        charts.cf_pie = createPieChart('cf_pieChart', dashboardData.cpn, dashboardData.cpt);
+        
+        charts.na_bar = createBarChart('na_barChart', dashboardData.na_mon, dashboardData.na_data, fnll_date);
+        charts.na_pie = createPieChart('na_pieChart', dashboardData.npn, dashboardData.npt);
+    }
+    
+    function createBarChart(canvasId, labels, data, dateRange) {
+        const ctx = document.getElementById(canvasId);
+        if (!ctx) return null;
+        
+        return new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels || [],
+                datasets: [{
+                    label: dateRange + '  (단위 : month)',
+                    data: data || [],
+                    borderWidth: 1,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+    
+    function createPieChart(canvasId, labels, data) {
+        const ctx = document.getElementById(canvasId);
+        if (!ctx) return null;
+        
+        return new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: labels || [],
+                datasets: [{
+                    label: '',
+                    data: data || [],
+                    backgroundColor: [
+                        'rgb(0, 122, 255)',
+                        'rgb(249, 126, 165)',
+                        'rgb(32, 207, 17)',
+                        'rgb(255, 206, 86)',
+                        'rgb(75, 192, 192)'
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    }
+    
+    function switchPlatform(platform) {
+        currentPlatform = platform;
+        
+        Object.keys(platformButtons).forEach(key => {
+            if (key === platform) {
+                platformButtons[key].classList.add('activate');
+            } else {
+                platformButtons[key].classList.remove('activate');
+            }
+        });
+        
+        Object.keys(dashboardAreas).forEach(key => {
+            if (key === platform) {
+                dashboardAreas[key].classList.remove('display_none');
+            } else {
+                dashboardAreas[key].classList.add('display_none');
+            }
+        });
+        
+        updatePlatformData(platform);
+    }
+    
+    function formatNumber(num) {
+        if (!num) return '0';
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+    
+    Object.keys(platformButtons).forEach(key => {
+        platformButtons[key].addEventListener('click', () => switchPlatform(key));
+    });
+    
+    selectBox.addEventListener('change', function() {
+        const selectedValue = this.value;
+        if (selectedValue) {
+            loadDashboardData(selectedValue);
+        }
+    });
+    
+    displayDateInfo();
+    
+    setTimeout(() => {
+        loadDashboardData();
+    }, 100);
 });
-new Chart(p_toctx, {
-  type: 'pie',
-  data :{
-    labels: t_pn,
-  datasets: [{
-    label: '',
-    data: t_pt,
-    backgroundColor: [
-      'rgb(0, 122, 255)',
-      'rgb(249, 126, 165)',
-      'rgb(32, 207, 17)'
-    ],
-    hoverOffset: 4
-  }],
-  options: {
-    scales: {
-      y: {
-        // beginAtZero: true
-      }
-    }
-  }
-}});
-
-// ably Chart
-new Chart(abctx, {
-  type: 'bar',
-  data: {
-    labels: to_year,
-    datasets: [{
-      label: fnll_date + `  (단위 : month)`,
-      data: ab_year_data,
-      borderWidth: 1
-    }]
-  },
-  options: {
-    scales: {
-      y: {
-        // beginAtZero: true
-      }
-    }
-  }
-});
-new Chart(a_toctx, {
-  type: 'pie',
-  data :{
-    labels: a_pn,
-  datasets: [{
-    label: '',
-    data: a_pt,
-    // hoverOffset: 4
-  }],
-  options: {
-    scales: {
-      y: {
-        // beginAtZero: true
-      }
-    }
-  }
-}});
-
-// cafe24 Chart
-new Chart(cfctx, {
-  type: 'bar',
-  data: {
-    labels: to_year,
-    datasets: [{
-      label: fnll_date + `  (단위 : month)`,
-      data: cf_year_data,
-      borderWidth: 1
-    }]
-  },
-  options: {
-    scales: {
-      y: {
-        // beginAtZero: true
-      }
-    }
-  }
-});
-new Chart(b_toctx, {
-  type: 'pie',
-  data :{
-    labels: c_pn,
-  datasets: [{
-    label: '',
-    data: c_pt,
-    hoverOffset: 4
-  }],
-  options: {
-    scales: {
-      y: {
-        // beginAtZero: true
-      }
-    }
-  }
-}});
-
-// naver Chart
-new Chart(nactx, {
-  type: 'bar',
-  data: {
-    labels: to_year,
-    datasets: [{
-      label: fnll_date + `  (단위 : month)`,
-      data: na_year_data,
-      borderWidth: 1
-    }]
-  },
-  options: {
-    scales: {
-      y: {
-        // beginAtZero: true
-      }
-    }
-  }
-});
-new Chart(c_toctx, {
-  type: 'pie',
-  data :{
-    labels: n_pn,
-  datasets: [{
-    label: '',
-    data: n_pt,
-    hoverOffset: 4
-  }],
-  options: {
-    scales: {
-      y: {
-        // beginAtZero: true
-      }
-    }
-  }
-}});
-
-
 </script>
-
 
 <!-- 로그인 하기 전에 보여지는 페이지 -->
 <!-- {% else %}
 <p>로그인 이후 사용이 가능합니다.</p>
 {% endif %} -->
-
 
 {% endblock %}
 {% block footer %}

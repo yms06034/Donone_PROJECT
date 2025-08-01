@@ -7,7 +7,9 @@
 {% block head %}
   {{ block.super }}
   {% load sass_tags %}
+  {% load static %}
   <link href="{% sass_src 'css/login.scss' %}" rel="stylesheet" type="text/css" />
+  <script src="{% static 'js/common.js' %}"></script>
 {% endblock %}
 
 {% block body %}
@@ -30,22 +32,77 @@
       </div>
   
       <div class="signup_form">
-        <form action="{% url 'app:login' %}" method="POST">
+        <form id="login-form">
         {% csrf_token %}
           <div class="form_groupid">
             <label class="label" for="username">아이디</label>
             <input class="id_forminput_tn" required type="input" name="username" id="username" placeholder="id">
           </div>
           <div class="form_groupid">
-            <label class="label_tn" for="email">비밀번호
+            <label class="label_tn" for="password">비밀번호
             </label>
-            <input class="id_forminput_tn" required type="password" name="password" placeholder="password">
+            <input class="id_forminput_tn" required type="password" name="password" id="password" placeholder="password">
           </div>
-          <input class="submit_signup" type="submit" value="로그인">
-          {{ error }}
+          <input class="submit_signup" type="button" id="login-submit" value="로그인">
+          <div id="error-message" style="color: red; margin-top: 10px;"></div>
         </form>
       </div>
     </div>
   </div>
 {% endblock %}
 
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('login-form');
+    const loginSubmit = document.getElementById('login-submit');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const errorMessage = document.getElementById('error-message');
+    
+    loginSubmit.addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value;
+        
+        if (!username || !password) {
+            notify.warning('아이디와 비밀번호를 입력해주세요.');
+            return;
+        }
+        
+        loader.show();
+        errorMessage.textContent = '';
+        
+        try {
+            const formData = new FormData(loginForm);
+            const response = await api.postForm('/api/ajax/login/', formData);
+            
+            if (response.status === 'success') {
+                notify.success('로그인 성공!');
+                setTimeout(() => {
+                    window.location.href = response.redirect || '/dashboard/';
+                }, 1000);
+            } else {
+                notify.error(response.message || '로그인에 실패했습니다.');
+                errorMessage.textContent = response.message || '아이디 또는 비밀번호가 올바르지 않습니다.';
+                passwordInput.value = '';
+                passwordInput.focus();
+            }
+        } catch (error) {
+            notify.error('서버 오류가 발생했습니다.');
+            console.error('Error:', error);
+            errorMessage.textContent = '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+        } finally {
+            loader.hide();
+        }
+    });
+    
+    loginForm.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            loginSubmit.click();
+        }
+    });
+    
+    usernameInput.focus();
+});
+</script>

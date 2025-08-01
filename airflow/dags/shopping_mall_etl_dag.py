@@ -14,13 +14,12 @@ import threading
 import json
 from functools import wraps
 
-# Django 프로젝트 경로를 Python path에 추가
 sys.path.insert(0, '/opt/airflow')
 sys.path.insert(0, '/opt/airflow/cp2_don')
 sys.path.insert(0, '/opt/airflow/don_home')
 
-# Django 설정 초기화
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cp2_don.settings')
+
 import django
 django.setup()
 
