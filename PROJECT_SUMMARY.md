@@ -53,7 +53,7 @@ H-log 쇼핑몰 데이터 통합 대시보드 시스템
 
 ### Data Pipeline
 - **Orchestration**: Apache Airflow 2.3.1
-- **Web Scraping**: Selenium + ChromeDriver
+- **Web Scraping**: Selenium
 - **API Integration**: Requests
 - **Data Processing**: Pandas, NumPy
 
@@ -61,7 +61,6 @@ H-log 쇼핑몰 데이터 통합 대시보드 시스템
 - **Containerization**: Docker & Docker Compose
 - **Web Server**: Nginx
 - **Application Server**: Gunicorn
-- **Cache**: Redis
 - **Metadata DB**: PostgreSQL (Airflow용)
 
 ### DevOps
@@ -71,7 +70,7 @@ H-log 쇼핑몰 데이터 통합 대시보드 시스템
 ## 주요 기능
 
 ### 1. 멀티 플랫폼 데이터 통합
-- 2개 쇼핑몰 플랫폼(Ably, Cafe24) 데이터 통합 관리
+- 3개 쇼핑몰 플랫폼(Ably, Cafe24, 스마트스토어) 데이터 통합 관리
 - 플랫폼별 특성에 맞는 수집 방식 적용
 
 ### 2. 자동화된 ETL 파이프라인
@@ -80,7 +79,7 @@ H-log 쇼핑몰 데이터 통합 대시보드 시스템
 - 병렬 처리로 효율성 향상
 
 ### 3. 실시간 대시보드
-- 일/월/년 단위 매출 현황
+- 일/주/월/년 단위 매출 현황
 - 제품별 판매 현황
 
 ### 4. 확장 가능한 아키텍처
@@ -120,14 +119,12 @@ H-log 쇼핑몰 데이터 통합 대시보드 시스템
 
 ### 3. 보안 및 안정성
 - **크롤링 차단 위험**: IP 차단에 대한 대응책 부족
-- **민감 정보 관리**: 사용자 로그인 정보 암호화 미흡
 - **백업 전략**: 자동 백업 및 복구 시스템 미구현
 
 ## 개선 방향
 
 ### 단기 개선사항
 1. **테스트 코드 작성**: pytest 기반 테스트 커버리지 80% 이상
-2. **로깅 시스템 강화**: ELK 스택 도입
 
 ### 중기 개선사항
 1. **Celery + Redis 도입**: 분산 작업 큐 시스템 구축

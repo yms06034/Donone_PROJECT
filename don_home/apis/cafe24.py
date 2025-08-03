@@ -33,10 +33,8 @@ def cafe24_df(admin_id, admin_pw, client_id, client_secret, mall_id, encode_csrf
             # Docker 환경에서는 설치된 ChromeDriver 사용, 로컬에서는 자동 다운로드
             import os
             if os.path.exists('/usr/local/bin/chromedriver'):
-                # Docker 환경 - 고정된 버전 사용
                 service = Service('/usr/local/bin/chromedriver')
             else:
-                # 로컬 개발 환경 - 자동 다운로드
                 service = Service(ChromeDriverManager().install())
             browser = webdriver.Chrome(service=service, options=options)
 

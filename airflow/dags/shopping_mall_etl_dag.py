@@ -46,7 +46,7 @@ class StructuredLogger:
         if not self.logger.handlers:
             handler = logging.StreamHandler()
             handler.setFormatter(formatter)
-            self.logger.addHandler(handler)
+            self.logger.addHandler(handler) 
     
     def _format_message(self, message, **kwargs):
         """구조화된 메시지 포맷팅"""
@@ -111,8 +111,8 @@ def log_performance(func):
     return wrapper
 
 # 동시 실행 제한
-ABLY_SEMAPHORE = threading.Semaphore(10)
-CAFE24_SEMAPHORE = threading.Semaphore(20)
+ABLY_SEMAPHORE = threading.Semaphore(10) # 머신 10개
+CAFE24_SEMAPHORE = threading.Semaphore(20) # 머신 20개 
 
 default_args = {
     'owner': 'airflow',
@@ -120,7 +120,7 @@ default_args = {
     'start_date': datetime(2023, 2, 10),
     'email_on_failure': True,
     'email_on_retry': False,
-    'retries': 2,  
+    'retries': 4,  
     'retry_delay': timedelta(minutes=5),
     'retry_exponential_backoff': True,  
     'max_retry_delay': timedelta(minutes=30),
@@ -128,12 +128,12 @@ default_args = {
 }
 
 dag = DAG(
-    'shopping_mall_etl_pipeline_v2',
+    'shopping_mall_etl_pipeline',
     default_args=default_args,
     description='쇼핑몰 데이터 수집 ETL 파이프라인 (로깅 강화 버전)',
     schedule_interval='0 8 * * *',
     catchup=False,
-    tags=['etl', 'shopping_mall', 'ably', 'cafe24', 'naver', 'v2'],
+    tags=['etl', 'shopping_mall', 'ably', 'cafe24', 'naver'],
 )
 
 @log_performance

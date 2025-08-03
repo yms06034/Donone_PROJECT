@@ -41,8 +41,8 @@ def AblyDataInfo(ably_id, ably_pw):
         return browser.find_element(By.XPATH, xpath)
 
 
-    input_id = find_xpath ('//*[@id="app"]/div[2]/form/div[3]/div/div/input')
-    input_pw = find_xpath ('//*[@id="app"]/div[2]/form/div[4]/div/div/input')
+    input_id = find_xpath('//*[@id="app"]/div[2]/form/div[3]/div/div/input')
+    input_pw = find_xpath('//*[@id="app"]/div[2]/form/div[4]/div/div/input')
 
     time.sleep(2)
 
